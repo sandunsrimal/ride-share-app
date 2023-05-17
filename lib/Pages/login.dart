@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
       // resizeToAvoidBottomInset: false,
       backgroundColor: Colors.orange,
       body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         child: Container(
           height: height,
           color: Colors.white,
@@ -37,8 +37,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   // color: Colors.orange,
                   borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(100.0),
-                    bottomLeft: Radius.circular(100.0),
+                    // bottomRight: Radius.circular(100.0),
+                    bottomLeft: Radius.circular(120.0),
                   ),
                 ),
                 child: Column(
@@ -47,10 +47,8 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                         margin: const EdgeInsets.only(top: 20),
                         alignment: Alignment.center,
-                        child: Image.asset(
-                          "assets/images/logo.png",
-                          scale: 2,
-                        )),
+                        child: Image.asset("assets/images/logo.png",
+                            scale: 2, color: Colors.white)),
                     const Text(
                       "SHIDE",
                       style: TextStyle(
@@ -61,7 +59,13 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-              const LoginView(),
+              Container(
+                // height: height,
+                // color: Colors.red,
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(25)),
+                child: const LoginView(),
+              ),
             ],
           ),
         ),
