@@ -430,10 +430,12 @@ class OtpInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Container(
-      margin: EdgeInsets.all(5),
-      height: 60,
-      width: 50,
+      margin: const EdgeInsets.all(2),
+      height: height * 0.06,
+      width: width * 0.12,
       child: TextField(
         autofocus: autoFocus,
         textAlign: TextAlign.center,
