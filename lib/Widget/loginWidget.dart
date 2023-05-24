@@ -1,6 +1,14 @@
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/material.dart';
+
+// ignore: depend_on_referenced_packages
+import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter/src/widgets/framework.dart';
+// import 'package:flutter/src/widgets/placeholder.dart';
+
+// import 'package:firebase_core/firebase_core.dart';
+import 'package:rideshareapp/Pages/signup.dart';
+
+// import '../Utils/next_screen.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -11,6 +19,26 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   bool index = true;
+  bool loading = false;
+
+  String? veID;
+  String? Otp;
+  final phoneNumberController = TextEditingController();
+  final TextEditingController _fieldOne = TextEditingController();
+  final TextEditingController _fieldTwo = TextEditingController();
+  final TextEditingController _fieldThree = TextEditingController();
+  final TextEditingController _fieldFour = TextEditingController();
+  final TextEditingController _fieldFive = TextEditingController();
+  final TextEditingController _fieldSix = TextEditingController();
+  final auth = FirebaseAuth.instance;
+
+  var phonenumber = '';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -32,8 +60,8 @@ class _LoginViewState extends State<LoginView> {
                   "Get moving with SHIDE",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: height * 0.03,
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,7 +71,7 @@ class _LoginViewState extends State<LoginView> {
                         borderRadius: BorderRadius.circular(20),
                         child: Image.asset(
                           "assets/images/sri-lanka.png",
-                          width: 70.0,
+                          width: width * 0.12,
                         )),
                     const Spacer(),
                     SizedBox(
@@ -57,8 +85,13 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     const Spacer(),
                     SizedBox(
+                      height: height * 0.05,
                       width: width * 0.6,
                       child: TextFormField(
+                        controller: phoneNumberController,
+                        // onChanged: (value) {
+                        //   phonenumber = value;
+                        // },
                         decoration: InputDecoration(
                           hintText: '766033817',
                           labelText: 'Phone number',
@@ -68,17 +101,17 @@ class _LoginViewState extends State<LoginView> {
                         ),
 
                         keyboardType: TextInputType.number,
-                        // validator: (String? value) {
-                        //   if (value!.length == 0)
-                        //     return "Phone number can't be empty";
-                        //   return null;
-                        // },
+                        validator: (String? value) {
+                          if (value!.length != 9)
+                            return "enter valied phone number";
+                          // return null;
+                        },
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 25,
+                SizedBox(
+                  height: height * 0.02,
                 ),
                 Container(
                   alignment: Alignment.center,
@@ -110,24 +143,74 @@ class _LoginViewState extends State<LoginView> {
                               shadowColor: Colors.transparent,
                               //make color or elevated button transparent
                             ),
-                            onPressed: () {
-                              print("You pressed Elevated Button");
+                            onPressed: () async {
                               setState(() {
-                                index = false;
-                                ;
+                                loading = true;
                               });
+                              //  print(phoneNumberController.text);
+                              loading
+                                  ? await FirebaseAuth.instance
+                                      .verifyPhoneNumber(
+                                      phoneNumber:
+                                          '+94${phoneNumberController.text}',
+                                      verificationCompleted:
+                                          (PhoneAuthCredential credential) {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      },
+                                      verificationFailed:
+                                          (FirebaseAuthException e) {
+                                        print("Faild");
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      },
+                                      codeSent: (
+                                        String verificationId,
+                                        int? resendToken,
+                                      ) {
+                                        veID = verificationId;
+                                        resendToken = null;
+                                        //  Navigator.pushNamed(context, "otp");
+                                        setState(() {
+                                          index = false;
+                                        });
+                                      },
+                                      codeAutoRetrievalTimeout:
+                                          (String verificationId) {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      },
+                                    )
+                                  : Container(
+                                      alignment: Alignment.center,
+                                      child: const CircularProgressIndicator(
+                                        backgroundColor: Colors.orange,
+                                      ),
+                                    );
+                              // if (!loading) {
+                              //   setState(() {
+                              //     index = false;
+                              //   });
+                              // }
+
+                              // print(phoneNumberController);
                             },
-                            child: const Padding(
-                              padding: EdgeInsets.only(
-                                top: 18,
-                                bottom: 18,
-                              ),
-                              child: Text("Continue"),
-                            ))),
+                            child: loading
+                                ? const CircularProgressIndicator()
+                                : const Padding(
+                                    padding: EdgeInsets.only(
+                                      top: 18,
+                                      bottom: 18,
+                                    ),
+                                    child: Text("Continue"),
+                                  ))),
                   ),
                 ),
-                const SizedBox(
-                  height: 50,
+                SizedBox(
+                  height: height * 0.08,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -188,10 +271,10 @@ class _LoginViewState extends State<LoginView> {
                 //   height: 8,
                 // ),
                 Container(
-                  padding: EdgeInsets.all(28),
-                  decoration: BoxDecoration(
+                  padding: const EdgeInsets.all(28),
+                  decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    // borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
                     children: [
@@ -199,15 +282,17 @@ class _LoginViewState extends State<LoginView> {
                         //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _textFieldOTP(first: true, last: false),
-                          _textFieldOTP(first: false, last: false),
-                          _textFieldOTP(first: false, last: false),
-                          _textFieldOTP(first: false, last: true),
+                          OtpInput(_fieldOne, true), // auto focus
+                          OtpInput(_fieldTwo, false),
+                          OtpInput(_fieldThree, false),
+                          OtpInput(_fieldFour, false),
+                          OtpInput(_fieldFive, false),
+                          OtpInput(_fieldSix, false)
                         ],
                       ),
-                      // const SizedBox(
-                      //   height: 12,
-                      // ),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       SizedBox(
                         width: 200,
                         height: 50,
@@ -237,11 +322,17 @@ class _LoginViewState extends State<LoginView> {
                                 //make color or elevated button transparent
                               ),
                               onPressed: () {
-                                print("You pressed Verify Button");
                                 setState(() {
-                                  index = false;
-                                  ;
+                                  loading = true;
                                 });
+                                loading
+                                    ? verify()
+                                    : Container(
+                                        alignment: Alignment.center,
+                                        child: const CircularProgressIndicator(
+                                          backgroundColor: Colors.orange,
+                                        ),
+                                      );
                               },
                               child: const Text("Verify"),
                             )),
@@ -281,6 +372,7 @@ class _LoginViewState extends State<LoginView> {
                   onPressed: () {
                     setState(() {
                       index = true;
+                      loading = false;
                     });
                   },
                 )
@@ -289,38 +381,93 @@ class _LoginViewState extends State<LoginView> {
           );
   }
 
-  Widget _textFieldOTP({required bool first, last}) {
+  void verify() async {
+    setState(() {
+      Otp = _fieldOne.text +
+          _fieldTwo.text +
+          _fieldThree.text +
+          _fieldFour.text +
+          _fieldFive.text +
+          _fieldSix.text;
+    });
+
+    // ignore: empty_catches
+    try {
+      PhoneAuthCredential credentials =
+          PhoneAuthProvider.credential(verificationId: veID!, smsCode: Otp!);
+
+      await auth.signInWithCredential(credentials);
+      print("Login successfull");
+      setState(() {
+        loading = false;
+      });
+      // const SignupPage();
+      newpage();
+    } catch (e) {
+      print("Login unsuccessfull");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Invalied OTP"),
+            content: const Text("Your OTP is invalied."),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  void newpage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SignupPage(
+                phoneNo: phoneNumberController.toString(),
+              )),
+    );
+  }
+}
+
+class OtpInput extends StatelessWidget {
+  final TextEditingController controller;
+  final bool autoFocus;
+  const OtpInput(this.controller, this.autoFocus, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Container(
-      margin: EdgeInsets.all(10),
-      height: 70,
-      child: AspectRatio(
-        aspectRatio: 1.0,
-        child: TextField(
-          autofocus: true,
-          onChanged: (value) {
-            if (value.length == 1 && last == false) {
-              FocusScope.of(context).nextFocus();
-            }
-            if (value.length == 0 && first == false) {
-              FocusScope.of(context).previousFocus();
-            }
-          },
-          showCursor: false,
-          readOnly: false,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          keyboardType: TextInputType.number,
-          maxLength: 1,
-          decoration: InputDecoration(
-            counter: const Offstage(),
-            enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(width: 2, color: Colors.black12),
-                borderRadius: BorderRadius.circular(12)),
-            focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(width: 2, color: Colors.orange),
-                borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
+      margin: const EdgeInsets.all(2),
+      height: height * 0.06,
+      width: width * 0.12,
+      child: TextField(
+        autofocus: autoFocus,
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        controller: controller,
+        maxLength: 1,
+        cursorColor: Theme.of(context).primaryColor,
+        decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            counterText: '',
+            hintStyle: TextStyle(color: Colors.black, fontSize: 20.0)),
+        onChanged: (value) {
+          if (value.length == 1) {
+            FocusScope.of(context).nextFocus();
+          }
+        },
       ),
     );
   }
