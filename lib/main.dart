@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rideshareapp/Pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:rideshareapp/Pages/signup.dart';
 
 import 'Pages/spash_screen.dart';
 
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const SplashScreen(),
+      // home: SignupPage(
+      //   phoneNo: '766033817',
+      // ),
     );
   }
 }

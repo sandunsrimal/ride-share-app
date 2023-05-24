@@ -23,6 +23,8 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
+	<!-- <key>io.flutter.embedded_views_preview</key>
+    <true/> -->
 	<array>
 		<dict>
 			<key>CFBundleTypeRole</key>
@@ -62,6 +64,12 @@
 	<string>Allow photo access to upload selected photo as your profile picture</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow photo access to upload selected photo as your profile picture</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to location when open.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to location when in the background.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>This app needs access to location when open and in the background.</string>
 </dict>
     
 	

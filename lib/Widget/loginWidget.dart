@@ -322,7 +322,17 @@ class _LoginViewState extends State<LoginView> {
                                 //make color or elevated button transparent
                               ),
                               onPressed: () {
-                                verify();
+                                setState(() {
+                                  loading = true;
+                                });
+                                loading
+                                    ? verify()
+                                    : Container(
+                                        alignment: Alignment.center,
+                                        child: const CircularProgressIndicator(
+                                          backgroundColor: Colors.orange,
+                                        ),
+                                      );
                               },
                               child: const Text("Verify"),
                             )),
@@ -388,6 +398,9 @@ class _LoginViewState extends State<LoginView> {
 
       await auth.signInWithCredential(credentials);
       print("Login successfull");
+      setState(() {
+        loading = false;
+      });
       // const SignupPage();
       newpage();
     } catch (e) {
@@ -409,6 +422,9 @@ class _LoginViewState extends State<LoginView> {
           );
         },
       );
+      setState(() {
+        loading = false;
+      });
     }
   }
 
