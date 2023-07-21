@@ -3,6 +3,7 @@ import 'package:rideshareapp/Pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:rideshareapp/Pages/signup.dart';
 
+import 'Pages/home.dart';
 import 'Pages/spash_screen.dart';
 
 Future main() async {
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(30))),
         ),
       ),
-      home: const SplashScreen(),
+      home:  const HomePage(),
       // home: SignupPage(
       //   phoneNo: '766033817',
       // ),
