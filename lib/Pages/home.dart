@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
 
     try {
       // getData() returns a json Decoded data
-      print("object 1");
+   
       dat = await network.getData();
 
       // We can reach to our desired JSON data manually as following
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
       }
 
       if (polyPoints.length == ls.lineString.length) {
-      print("object 2");
+     
 
         setPolyLines();
       }
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   setPolyLines() {
-      print("object 3");
+    
 
     Polyline polyline = Polyline(
       polylineId: PolylineId("polyline"),
@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
       points: polyPoints,
       width: 5,
     );
-      print("object 4");
+     
 
     polyLines.add(polyline);
     setState(() {});
