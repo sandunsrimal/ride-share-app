@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
@@ -56,10 +57,14 @@ class _IDuploadState extends State<IDupload> {
     final destination = 'files/$fileName';
 
     try {
-      final ref = firebase_storage.FirebaseStorage.instance
-          .ref(destination)
-          .child('file/');
-      await ref.putFile(_photo!);
+      // final ref = firebase_storage.FirebaseStorage.instance
+      //     .ref(destination)
+      //     .child('file/');
+      // await ref.putFile(_photo!);
+      var imageName = DateTime.now().millisecondsSinceEpoch.toString();
+								var storageRef = FirebaseStorage.instance.ref().child('ID_images/$imageName.jpg');
+      var uploadTask = storageRef.putFile(_photo!);
+      var downloadUrl = await (await uploadTask).ref.getDownloadURL();
     } catch (e) {
       print('error occured');
     }

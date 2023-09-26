@@ -34,7 +34,8 @@ class MyApp extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(30))),
         ),
       ),
-      home:     HomePage(),
+      home: SplashScreen(),
+      // home:     SignupPage(phoneNo: '766033817',),
       // home: SignupPage(
       //   phoneNo: '766033817',
       // ),

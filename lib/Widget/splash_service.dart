@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import '../Pages/login.dart';
+import '../Pages/mylocation.dart';
 import '../Pages/signup.dart';
 
 class SplashServices {
@@ -14,8 +16,8 @@ class SplashServices {
           () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => SignupPage(
-                        phoneNo: "09",
+                  builder: (context) => HomePage(
+                        phonenumber: auth.currentUser!.phoneNumber.toString(),
                       ))));
       // Navigator.of(context).pushReplacement(
       //     MaterialPageRoute(builder: (context) => SignupPage()));

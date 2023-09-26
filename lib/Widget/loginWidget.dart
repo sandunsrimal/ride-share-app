@@ -101,11 +101,11 @@ class _LoginViewState extends State<LoginView> {
                         ),
 
                         keyboardType: TextInputType.number,
-                        validator: (String? value) {
-                          if (value!.length != 9)
-                            return "enter valied phone number";
-                          // return null;
-                        },
+                        // validator: (String? value) {
+                        //   if (value!.length != 9)
+                        //     return "enter valied phone number";
+                        //   // return null;
+                        // },
                       ),
                     ),
                   ],
@@ -161,7 +161,7 @@ class _LoginViewState extends State<LoginView> {
                                       },
                                       verificationFailed:
                                           (FirebaseAuthException e) {
-                                        print("Faild");
+                                        print("Faild wda");
                                         setState(() {
                                           loading = false;
                                         });
@@ -401,8 +401,14 @@ class _LoginViewState extends State<LoginView> {
       setState(() {
         loading = false;
       });
+      if(1!=1){
+
+      }
+      else{
+         newpage();
+      }
       // const SignupPage();
-      newpage();
+      
     } catch (e) {
       print("Login unsuccessfull");
       showDialog(
