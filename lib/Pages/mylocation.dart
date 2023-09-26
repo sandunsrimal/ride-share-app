@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rideshareapp/Pages/login.dart';
 
 class HomePage extends StatefulWidget {
-const HomePage({Key? key}) : super(key: key);
+  String? phonenumber;
+ HomePage({Key? key, required this.phonenumber}) : super(key: key);
 
 @override
 _HomePageState createState() => _HomePageState();
@@ -40,6 +43,11 @@ Future<Position> getUserCurrentLocation() async {
 	return await Geolocator.getCurrentPosition();
 }
 
+ signOut() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
+  }
 @override
 Widget build(BuildContext context) {
 	return Scaffold(
@@ -51,6 +59,7 @@ Widget build(BuildContext context) {
         child: GoogleMap(
         // on below line setting camera position
         initialCameraPosition: _kGoogle,
+        
         // on below line we are setting markers on the map
         markers: Set<Marker>.of(_markers),
         // on below line specifying map type.
@@ -63,10 +72,11 @@ Widget build(BuildContext context) {
         onMapCreated: (GoogleMapController controller){
             _controller.complete(controller);
           },
+          
         ),
       ),
       Positioned(
-        bottom: 200,
+        bottom: 240,
         right: 20,
         child: FloatingActionButton(
 		onPressed: () async{
@@ -81,7 +91,8 @@ Widget build(BuildContext context) {
 				infoWindow: const InfoWindow(
 					title: 'My Current Location',
 				),
-				)
+				),
+        
 			);
 
 			// specified current users location
@@ -120,6 +131,7 @@ Widget build(BuildContext context) {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                      
                           InkWell(
                               child: Container(
                                 decoration: BoxDecoration(
@@ -175,6 +187,20 @@ Widget build(BuildContext context) {
                                   index = false;
                                 });
                               }),
+                          const SizedBox(
+                            width: 60,),
+
+                                   InkWell(
+                            child: const Icon(
+                              Icons.logout,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                            onTap: () {
+                              signOut();
+                            
+                            },
+                          )
                         ],
                       ),
                     ),
@@ -184,7 +210,7 @@ Widget build(BuildContext context) {
      Container(
      alignment: Alignment.bottomCenter,
      child: Container(
-       height: 200,
+       height: 220,
        width: MediaQuery.of(context).size.width,
 
        //color: Colors.white,
@@ -204,9 +230,9 @@ Widget build(BuildContext context) {
             Column(
               children: [
                 Container(
-                  margin: EdgeInsets.only(left: 40,top: 20),
-                  height: 50,
-                  width: 50,
+                  margin: EdgeInsets.only(left: 40,top: 37),
+                  height: 20,
+                  width: 20,
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
@@ -215,12 +241,99 @@ Widget build(BuildContext context) {
         
          
                 Container(margin: EdgeInsets.only(left: 40,),
-                height: 100,
+                height: 70,
                 width: 2,
                 color: Colors.white,
                 ),
+                Container(
+                  margin: EdgeInsets.only(left: 40),
+                  height: 20,
+                  width: 20,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    
+                  )),
               ],
             ),
+            Column(
+              children: [
+                 Container(
+                   margin: EdgeInsets.only(left: 20, top: 30),
+                             //     height: height * 0.05,
+                              //    width: width * 0.4,
+                              height: 40,
+                              width: 220,
+                                  child: TextFormField(
+                                    
+                               //     controller: lnameController,
+                                    // onChanged: (value) {
+                                    //   phonenumber = value;
+                                    // },
+                                    decoration: InputDecoration(
+                                      label: Text("From",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),),
+                                
+                                      border: OutlineInputBorder(
+                                      
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                           
+                                      ),
+                                    ),
+
+                                    keyboardType: TextInputType.text,
+                                    // validator: (String? value) {
+                                    //   if (value!.length != 9)
+                                    //     return "enter valied phone number";
+                                    //   // return null;
+                                    // },
+                                  ),
+                                ),
+        
+        
+         
+             SizedBox(height: 15,),
+              Container(
+                   margin: EdgeInsets.only(left: 20, top: 30),
+                             //     height: height * 0.05,
+                              //    width: width * 0.4,
+                              height: 40,
+                              width: 220,
+                                  child: TextFormField(
+                               //     controller: lnameController,
+                                    // onChanged: (value) {
+                                    //   phonenumber = value;
+                                    // },
+                                    decoration: InputDecoration(
+                                      label: Text("To",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                    ),
+
+                                    keyboardType: TextInputType.text,
+                                    // validator: (String? value) {
+                                    //   if (value!.length != 9)
+                                    //     return "enter valied phone number";
+                                    //   // return null;
+                                    // },
+                                  ),
+                                ),
+        
+              ],
+            ),
+            
           ],
 
         )

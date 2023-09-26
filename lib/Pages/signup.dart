@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:rideshareapp/Pages/login.dart';
 
+import '../Service/dbuser.dart';
 import '../Widget/IDupload.dart';
 import '../Widget/selectmap.dart';
+import 'mylocation.dart';
+
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
+
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'package:path/path.dart';
 
 class SignupPage extends StatefulWidget {
   SignupPage({super.key, required this.phoneNo});
@@ -13,11 +30,13 @@ class SignupPage extends StatefulWidget {
   @override
   State<SignupPage> createState() => _SignupPageState();
 }
+String? IDimageurl;
 
 class _SignupPageState extends State<SignupPage> {
   final fnameController = TextEditingController();
   final lnameController = TextEditingController();
   final emailController = TextEditingController();
+  final ageController = TextEditingController();
   final homenumber = TextEditingController();
   final idController = TextEditingController();
   final auth = FirebaseAuth.instance;
@@ -36,45 +55,7 @@ class _SignupPageState extends State<SignupPage> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      // appBar: AppBar(
-      // leading: IconButton(
-      //   icon: const Icon(Icons.arrow_back, color: Colors.white),
-      //   onPressed: () => Navigator.of(context).pop(),
-      // ),
-      //   actions: [
-      //     IconButton(
-      // onPressed: () {
-      //   auth.signOut().then((value) {
-      //     Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //             builder: (context) => const LoginPage()));
-      //   }).onError((error, stackTrace) {
-      //     showDialog(
-      //       context: context,
-      //       builder: (BuildContext context) {
-      //         return AlertDialog(
-      //           title: const Text("Error"),
-      //           content: Text(error.toString()),
-      //           actions: <Widget>[
-      //             TextButton(
-      //               child: const Text("close"),
-      //               onPressed: () {
-      //                 Navigator.of(context).pop();
-      //               },
-      //             ),
-      //           ],
-      //         );
-      //       },
-      //     );
-      //   });
-      // },
-      //         icon: const Icon(Icons.logout_rounded)),
-      //     const SizedBox(
-      //       width: 10,
-      //     )
-      //   ],
-      // ),
+    
       body: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
         child: Container(
@@ -227,7 +208,7 @@ class _SignupPageState extends State<SignupPage> {
                                   height: height * 0.05,
                                   width: width * 0.4,
                                   child: TextFormField(
-                                    controller: lnameController,
+                                    controller: fnameController,
                                     // onChanged: (value) {
                                     //   phonenumber = value;
                                     // },
@@ -339,7 +320,7 @@ class _SignupPageState extends State<SignupPage> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                const IDupload(),
+                                 IDupload()
                               ],
                             ),
                             const SizedBox(
@@ -445,7 +426,29 @@ class _SignupPageState extends State<SignupPage> {
                                       shadowColor: Colors.transparent,
                                       //make color or elevated button transparent
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () async {
+             
+               
+                  final result = await DatabaseService().addUser(
+                  firstname: fnameController.text,
+                  lastname: lnameController.text,
+                  email: emailController.text,
+                  homenumber: homenumber.text,
+                  phonenumber: widget.phoneNo,
+                  usertype: 'passenger',
+                  nic: idController.text,
+                  nicimage: IDimageurl!,
+                  gender: gendername!,
+                  age: "20"
+                  // age: ageController.text,
+                  );
+                  if (result!.contains('success')) {
+               Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo,)));
+                  }
+             
+                
+             
+              },
                                     child: const Text(
                                       "Sign up",
                                       style: TextStyle(fontSize: 15),
@@ -590,7 +593,7 @@ class _SignupPageState extends State<SignupPage> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                const IDupload(),
+                                 IDupload(),
                               ],
                             ),
                             const SizedBox(
@@ -667,5 +670,140 @@ class CustomRadio extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+
+
+
+class IDupload extends StatefulWidget {
+  const IDupload({super.key});
+
+  @override
+  State<IDupload> createState() => _IDuploadState();
+}
+
+class _IDuploadState extends State<IDupload> {
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+
+  File? _photo;
+  final ImagePicker _picker = ImagePicker();
+
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future imgFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future uploadFile() async {
+    if (_photo == null) return;
+    final fileName = basename(_photo!.path);
+    final destination = 'files/$fileName';
+
+    try {
+      // final ref = firebase_storage.FirebaseStorage.instance
+      //     .ref(destination)
+      //     .child('file/');
+      // await ref.putFile(_photo!);
+      var imageName = DateTime.now().millisecondsSinceEpoch.toString();
+								var storageRef = FirebaseStorage.instance.ref().child('ID_images/$imageName.jpg');
+      var uploadTask = storageRef.putFile(_photo!);
+      var downloadUrl = await (await uploadTask).ref.getDownloadURL();
+      IDimageurl=downloadUrl.toString();
+    } catch (e) {
+      print('error occured');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        const SizedBox(
+          height: 10,
+        ),
+        Center(
+          child: GestureDetector(
+            onTap: () {
+              _showPicker(context);
+            },
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.orange,
+              child: _photo != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.file(
+                        _photo!,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.fitHeight,
+                      ),
+                    )
+                  : Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(50)),
+                      width: 53,
+                      height: 53,
+                      child: Icon(
+                        Icons.camera_alt,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                    leading: const Icon(Icons.photo_library),
+                    title: const Text('Gallery'),
+                    onTap: () {
+                      imgFromGallery();
+                      Navigator.of(context).pop();
+                    }),
+                ListTile(
+                  leading: const Icon(Icons.photo_camera),
+                  title: const Text('Camera'),
+                  onTap: () {
+                    imgFromCamera();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
