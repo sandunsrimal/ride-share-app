@@ -12,6 +12,7 @@ class DatabaseService {
     required String nicimage,
     required String age,
     required String gender,
+    required String accountstatus,
   }) async {
     try {
       CollectionReference users =
@@ -28,6 +29,7 @@ class DatabaseService {
         'nic_image': nicimage,
         'age': age,
         'gender': gender,
+        'account_status': accountstatus,
       });
       return 'success';
     } catch (e) {

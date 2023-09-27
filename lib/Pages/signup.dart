@@ -33,10 +33,12 @@ class SignupPage extends StatefulWidget {
 String? IDimageurl;
 
 class _SignupPageState extends State<SignupPage> {
+   bool loading=false;
   final fnameController = TextEditingController();
   final lnameController = TextEditingController();
   final emailController = TextEditingController();
   final ageController = TextEditingController();
+  final addressController = TextEditingController();
   final homenumber = TextEditingController();
   final idController = TextEditingController();
   final auth = FirebaseAuth.instance;
@@ -54,6 +56,7 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+   
     return Scaffold(
     
       body: SingleChildScrollView(
@@ -356,17 +359,59 @@ class _SignupPageState extends State<SignupPage> {
                             const SizedBox(
                               height: 20,
                             ),
-                            const Text(
-                              "Home Address",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black38,
-                                  fontWeight: FontWeight.bold),
+                             SizedBox(
+                              height: height * 0.05,
+                              width: width * 0.85,
+                              child: TextFormField(
+                                controller: ageController,
+                                // onChanged: (value) {
+                                //   phonenumber = value;
+                                // },
+                                decoration: InputDecoration(
+                                  hintText: '2000',
+                                  labelText: 'Birth Year',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                ),
+
+                                keyboardType: TextInputType.number,
+                                // validator: (String? value) {
+                                //   if (value!.length != 9)
+                                //     return "enter valied phone number";
+                                //   // return null;
+                                // },
+                              ),
                             ),
+                             
                             const SizedBox(
-                              height: 10,
+                              height: 20,
                             ),
-                            const SelectMap(),
+                            SizedBox(
+                              height: height * 0.05,
+                              width: width * 0.85,
+                              child: TextFormField(
+                                controller: addressController,
+                                // onChanged: (value) {
+                                //   phonenumber = value;
+                                // },
+                                decoration: InputDecoration(
+                                  hintText: 'B76,Parangiyawadiya,Anuradhapura District,Sri Lanka',
+                                  labelText: 'Home Address',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                ),
+
+                                keyboardType: TextInputType.text,
+                                // validator: (String? value) {
+                                //   if (value!.length != 9)
+                                //     return "enter valied phone number";
+                                //   // return null;
+                                // },
+                              ),
+                            ),
+                             
                             const SizedBox(
                               height: 20,
                             ),
@@ -394,9 +439,10 @@ class _SignupPageState extends State<SignupPage> {
                                 // },
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
+                          
                             SizedBox(
                               width: 200,
                               height: 50,
@@ -427,6 +473,9 @@ class _SignupPageState extends State<SignupPage> {
                                       //make color or elevated button transparent
                                     ),
                                     onPressed: () async {
+                                       setState(() {
+                      loading=true;
+                    });
              
                
                   final result = await DatabaseService().addUser(
@@ -439,17 +488,24 @@ class _SignupPageState extends State<SignupPage> {
                   nic: idController.text,
                   nicimage: IDimageurl!,
                   gender: gendername!,
-                  age: "20"
+                  age: ageController.text,
+                  accountstatus: "pending",
                   // age: ageController.text,
                   );
                   if (result!.contains('success')) {
+                    setState(() {
+                      loading=false;
+                    });
+
                Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo,)));
                   }
              
                 
              
               },
-                                    child: const Text(
+                                    child: 
+                                    loading ? const CircularProgressIndicator()
+                                    : const Text(
                                       "Sign up",
                                       style: TextStyle(fontSize: 15),
                                     ),

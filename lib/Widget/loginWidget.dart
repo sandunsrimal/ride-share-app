@@ -206,7 +206,8 @@ class _LoginViewState extends State<LoginView> {
                                       bottom: 18,
                                     ),
                                     child: Text("Continue"),
-                                  ))),
+                                  ))
+                                  ),
                   ),
                 ),
                 SizedBox(
@@ -439,7 +440,7 @@ class _LoginViewState extends State<LoginView> {
       context,
       MaterialPageRoute(
           builder: (context) => SignupPage(
-                phoneNo: phoneNumberController.toString(),
+                phoneNo: phoneNumberController.text,
               )),
     );
   }
