@@ -5,6 +5,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rideshareapp/Pages/login.dart';
 
+import '../Utils/next_screen.dart';
+import 'availiable_rides.dart';
+
 class HomePage extends StatefulWidget {
   String? phonenumber;
  HomePage({Key? key, required this.phonenumber}) : super(key: key);
@@ -16,6 +19,7 @@ _HomePageState createState() => _HomePageState();
 class _HomePageState extends State<HomePage> {
 final Completer<GoogleMapController> _controller = Completer();
   bool index = true;
+  bool loading = false; 
 // on below line we have specified camera position
 static const CameraPosition _kGoogle = CameraPosition(
 	target: LatLng(7.8731, 80.7718),
@@ -79,6 +83,7 @@ Widget build(BuildContext context) {
         bottom: 240,
         right: 20,
         child: FloatingActionButton(
+          backgroundColor: Colors.orange,
 		onPressed: () async{
 		getUserCurrentLocation().then((value) async {
 			print(value.latitude.toString() +" "+value.longitude.toString());
@@ -225,120 +230,193 @@ Widget build(BuildContext context) {
                     ],
                   ),),
        child: 
-        Row(
+        Column(
           children: [
-            Column(
+            Row(
               children: [
-                Container(
-                  margin: EdgeInsets.only(left: 40,top: 37),
-                  height: 20,
-                  width: 20,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    
-                  )),
-        
-         
-                Container(margin: EdgeInsets.only(left: 40,),
-                height: 70,
-                width: 2,
-                color: Colors.white,
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 40),
-                  height: 20,
-                  width: 20,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    
-                  )),
-              ],
-            ),
-            Column(
-              children: [
-                 Container(
-                   margin: EdgeInsets.only(left: 20, top: 30),
-                             //     height: height * 0.05,
-                              //    width: width * 0.4,
-                              height: 40,
-                              width: 220,
-                                  child: TextFormField(
-                                    
-                               //     controller: lnameController,
-                                    // onChanged: (value) {
-                                    //   phonenumber = value;
-                                    // },
-                                    decoration: InputDecoration(
-                                      label: Text("From",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),),
-                                
-                                      border: OutlineInputBorder(
-                                      
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                           
-                                      ),
-                                    ),
-
-                                    keyboardType: TextInputType.text,
-                                    // validator: (String? value) {
-                                    //   if (value!.length != 9)
-                                    //     return "enter valied phone number";
-                                    //   // return null;
-                                    // },
-                                  ),
-                                ),
-        
-        
-         
-             SizedBox(height: 15,),
-              Container(
-                   margin: EdgeInsets.only(left: 20, top: 30),
-                             //     height: height * 0.05,
-                              //    width: width * 0.4,
-                              height: 40,
-                              width: 220,
-                                  child: TextFormField(
-                               //     controller: lnameController,
-                                    // onChanged: (value) {
-                                    //   phonenumber = value;
-                                    // },
-                                    decoration: InputDecoration(
-                                      label: Text("To",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
-                                    ),
-
-                                    keyboardType: TextInputType.text,
-                                    // validator: (String? value) {
-                                    //   if (value!.length != 9)
-                                    //     return "enter valied phone number";
-                                    //   // return null;
-                                    // },
-                                  ),
-                                ),
-        
-              ],
-            ),
+                Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 40,top: 20),
+                      height: 15,
+                      width: 15,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        
+                      )),
             
-          ],
+             
+                    Container(margin: EdgeInsets.only(left: 40,),
+                    height: 60,
+                    width: 2,
+                    color: Colors.white,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 40),
+                      height: 15,
+                      width: 15,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        
+                      )),
+                  ],
+                ),
+                Column(
+                  children: [
+                     Container(
+                       margin: EdgeInsets.only(left: 20, top: 20),
+                                 //     height: height * 0.05,
+                                  //    width: width * 0.4,
+                                  height: 40,
+                                  width: 290,
+                                      child: TextFormField(
+                                        
+                                   //     controller: lnameController,
+                                        // onChanged: (value) {
+                                        //   phonenumber = value;
+                                        // },
+                                        decoration: InputDecoration(
+                                          label: const Text("From",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),),
+                                    
+                                          border: OutlineInputBorder(
+                                          
+                                            borderRadius:
+                                                BorderRadius.circular(30.0),
+                                               
+                                          ),
+                                        ),
 
+                                        keyboardType: TextInputType.text,
+                                        // validator: (String? value) {
+                                        //   if (value!.length != 9)
+                                        //     return "enter valied phone number";
+                                        //   // return null;
+                                        // },
+                                      ),
+                                    ),
+            
+            
+             
+                 const SizedBox(height: 13,),
+                  Container(
+                       margin: EdgeInsets.only(left: 20, top: 15),
+                                 //     height: height * 0.05,
+                                  //    width: width * 0.4,
+                                  height: 40,
+                                  width: 290,
+                                      child: TextFormField(
+                                   //     controller: lnameController,
+                                        // onChanged: (value) {
+                                        //   phonenumber = value;
+                                        // },
+                                        decoration: InputDecoration(
+                                          label: const Text("To",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                          ),
+                                          border: OutlineInputBorder(
+                                            
+                                            borderRadius:
+                                                BorderRadius.circular(30.0),
+                                          ),
+                                        ),
+
+                                        keyboardType: TextInputType.text,
+                                        // validator: (String? value) {
+                                        //   if (value!.length != 9)
+                                        //     return "enter valied phone number";
+                                        //   // return null;
+                                        // },
+                                      ),
+                                    ),
+            
+                  ],
+                ),
+
+                 
+                
+              ],
+
+            ),
+            const SizedBox(height: 20,),
+             Container(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: 150,
+                    height: 40,
+                    child: DecoratedBox(
+                        decoration: BoxDecoration(
+                            gradient: const LinearGradient(colors: [
+                              Colors.orange,
+                              Colors.red,
+
+                              //add more colors
+                            ]),
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: const <BoxShadow>[
+                              BoxShadow(
+                                  color: Color.fromRGBO(
+                                      0, 0, 0, 0.57), //shadow for button
+                                  blurRadius: 5) //blur radius of shadow
+                            ]),
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              disabledForegroundColor:
+                                  Colors.transparent.withOpacity(0.38),
+                              disabledBackgroundColor:
+                                  Colors.transparent.withOpacity(0.12),
+                              shadowColor: Colors.transparent,
+                              //make color or elevated button transparent
+                            ),
+                            onPressed: () async {
+                              setState(() {
+                                loading = true;
+                              });
+                              //  print(phoneNumberController.text);
+                              loading
+                                  ?  nextScreeniOS(context, AvailiableRides())
+    
+                                  : Container(
+                                      alignment: Alignment.center,
+                                      child: const CircularProgressIndicator(
+                                        backgroundColor: Colors.orange,
+                                      ),
+                                    );
+                              // if (!loading) {
+                              //   setState(() {
+                              //     index = false;
+                              //   });
+                              // }
+
+                              // print(phoneNumberController);
+                            },
+                            child: loading
+                                ? const CircularProgressIndicator()
+                                : const Padding(
+                                    padding: EdgeInsets.only(
+                                      top: 10,
+                                      bottom: 10,
+                                    ),
+                                    child: Text("Continue"),
+                                  ))
+                                  ),
+                  ),
+                ),
+          ],
         )
      ),
    ),
+
+    
     ],
      
     ),
