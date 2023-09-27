@@ -48,6 +48,9 @@ dependencies:
   geocoding: ^2.1.0
   geolocator: ^8.2.0
   intl: ^0.18.1
+  # google_maps_place_picker_mb: ^2.0.0-mb.20
+  flutter_google_places: null
+  shared_preferences: ^2.2.1
   
   # flutter_svg: ^2.0.7
   
