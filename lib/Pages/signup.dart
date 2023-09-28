@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:rideshareapp/Pages/login.dart';
 
+import '../Service/dbdriver.dart';
 import '../Service/dbuser.dart';
 import '../Widget/IDupload.dart';
 import '../Widget/selectmap.dart';
@@ -41,6 +42,10 @@ class _SignupPageState extends State<SignupPage> {
   final addressController = TextEditingController();
   final homenumber = TextEditingController();
   final idController = TextEditingController();
+  final vehicle_image = TextEditingController();
+  final vehicle_number = TextEditingController();
+  final vehicle_type = TextEditingController();
+
   final auth = FirebaseAuth.instance;
   bool index = true;
   String? gendername;
@@ -537,7 +542,7 @@ class _SignupPageState extends State<SignupPage> {
                                   height: height * 0.05,
                                   width: width * 0.4,
                                   child: TextFormField(
-                                    controller: lnameController,
+                                    controller: fnameController,
                                     // onChanged: (value) {
                                     //   phonenumber = value;
                                     // },
@@ -607,7 +612,7 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
 
-                                keyboardType: TextInputType.number,
+                                keyboardType: TextInputType.text,
                                 // validator: (String? value) {
                                 //   if (value!.length != 9)
                                 //     return "enter valied phone number";
@@ -630,8 +635,8 @@ class _SignupPageState extends State<SignupPage> {
                                     //   phonenumber = value;
                                     // },
                                     decoration: InputDecoration(
-                                      hintText: '123456789v',
-                                      labelText: 'NIC',
+                                      hintText: '123456789',
+                                      labelText: 'Driving License',
                                       border: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(30.0),
@@ -649,11 +654,170 @@ class _SignupPageState extends State<SignupPage> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                 IDupload(),
+                                 IDupload()
                               ],
                             ),
                             const SizedBox(
                               height: 10,
+                            ),
+                            SizedBox(
+                              height: 40,
+                              //   width: width,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemCount: genders.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, right: 8),
+                                      child: InkWell(
+                                        // splashColor: Colors.transparent,
+                                        onTap: () {
+                                          setState(() {
+                                            genders.forEach((gender) =>
+                                                gender.isSelected = false);
+                                            genders[index].isSelected = true;
+                                            gendername = genders[index].name;
+                                            print(gendername);
+                                          });
+                                        },
+                                        child: CustomRadio(genders[index]),
+                                      ),
+                                    );
+                                  }),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                             
+                            SizedBox(
+                              height: height * 0.05,
+                              width: width * 0.85,
+                              child: TextFormField(
+                                controller: addressController,
+                                // onChanged: (value) {
+                                //   phonenumber = value;
+                                // },
+                                decoration: InputDecoration(
+                                  hintText: 'B76,Parangiyawadiya,Anuradhapura District,Sri Lanka',
+                                  labelText: 'Home Address',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                ),
+
+                                keyboardType: TextInputType.text,
+                                // validator: (String? value) {
+                                //   if (value!.length != 9)
+                                //     return "enter valied phone number";
+                                //   // return null;
+                                // },
+                              ),
+                            ),
+                             
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            SizedBox(
+                              height: height * 0.05,
+                              width: width * 0.85,
+                              child: TextFormField(
+                                controller: homenumber,
+                                // onChanged: (value) {
+                                //   phonenumber = value;
+                                // },
+                                decoration: InputDecoration(
+                                  hintText: '0766033817',
+                                  labelText: 'Home contact number',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                ),
+
+                                keyboardType: TextInputType.number,
+                                // validator: (String? value) {
+                                //   if (value!.length != 9)
+                                //     return "enter valied phone number";
+                                //   // return null;
+                                // },
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          
+                            SizedBox(
+                              width: 200,
+                              height: 50,
+                              child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                      gradient: const LinearGradient(colors: [
+                                        Colors.orange,
+                                        Colors.red,
+
+                                        //add more colors
+                                      ]),
+                                      borderRadius: BorderRadius.circular(25),
+                                      boxShadow: const <BoxShadow>[
+                                        BoxShadow(
+                                            color: Color.fromRGBO(0, 0, 0,
+                                                0.57), //shadow for button
+                                            blurRadius:
+                                                5) //blur radius of shadow
+                                      ]),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      disabledForegroundColor:
+                                          Colors.transparent.withOpacity(0.38),
+                                      disabledBackgroundColor:
+                                          Colors.transparent.withOpacity(0.12),
+                                      shadowColor: Colors.transparent,
+                                      //make color or elevated button transparent
+                                    ),
+                                    onPressed: () async {
+                                       setState(() {
+                      loading=true;
+                    });
+             
+               
+                  final result = await DatabaseServiceDriver().addUser(
+                  firstname: fnameController.text,
+                  lastname: lnameController.text,
+                  email: emailController.text,
+                  homenumber: homenumber.text,
+                  phonenumber: widget.phoneNo,
+                  usertype: 'driver',
+                  nic: idController.text,
+                  nicimage: IDimageurl!,
+                  gender: gendername!,
+                  age: ageController.text,
+                  accountstatus: "pending",
+                  vehicletype: "car",
+                  vehiclenumber: "123456789",
+                  vehicleimage: "imageurl"
+                  
+                  
+                  );
+                  if (result!.contains('success')) {
+                    setState(() {
+                      loading=false;
+                    });
+
+               Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo,)));
+                  }
+             
+                
+             
+              },
+                                    child: 
+                                    loading ? const CircularProgressIndicator()
+                                    : const Text(
+                                      "Sign up",
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  )),
                             ),
                           ],
                         ),
