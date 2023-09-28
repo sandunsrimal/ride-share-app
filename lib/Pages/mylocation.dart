@@ -378,19 +378,12 @@ Widget build(BuildContext context) {
                               //make color or elevated button transparent
                             ),
                             onPressed: () async {
-                              setState(() {
-                                loading = true;
-                              });
+                             
                               //  print(phoneNumberController.text);
-                              loading
-                                  ?  nextScreeniOS(context, AvailiableRides())
+                              
+                                    nextScreeniOS(context, AvailiableRides());
     
-                                  : Container(
-                                      alignment: Alignment.center,
-                                      child: const CircularProgressIndicator(
-                                        backgroundColor: Colors.orange,
-                                      ),
-                                    );
+                                 
                               // if (!loading) {
                               //   setState(() {
                               //     index = false;
@@ -406,7 +399,7 @@ Widget build(BuildContext context) {
                                       top: 10,
                                       bottom: 10,
                                     ),
-                                    child: Text("Continue"),
+                                    child: Text("Search Ride"),
                                   ))
                                   ),
                   ),

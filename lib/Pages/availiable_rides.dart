@@ -106,7 +106,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                           ),
                         ],
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Container(
                         margin: const EdgeInsets.all(20),
                         child: Row(
@@ -120,6 +120,20 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                       ),
                     ],
                   ),
+                   Container(
+                    margin: const EdgeInsets.only(left: 10),
+                     child: Row(
+                       children: const [
+                         Text("Date : ",style: TextStyle(fontSize: 15,
+                                      fontWeight: FontWeight.bold),),
+                                      Text("26/09/2023",style: TextStyle(fontSize: 15,),),
+                                        SizedBox(width: 30,),
+                                       Text("Time : ",style: TextStyle(fontSize: 15,
+                                      fontWeight: FontWeight.bold),),
+                                      Text("8.00 AM",style: TextStyle(fontSize: 15,),),
+                       ],
+                     ),
+                   ),
                     Row(
                       children: [
                         Column(
