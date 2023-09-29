@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rideshareapp/Pages/login.dart';
+import 'package:rideshareapp/Widget/NavBar.dart';
 
 import '../Utils/next_screen.dart';
 import 'availiable_rides.dart';
@@ -20,6 +21,10 @@ class _HomePageState extends State<HomePage> {
 final Completer<GoogleMapController> _controller = Completer();
   bool index = true;
   bool loading = false; 
+  bool usermode = true;
+  int seats = 1;
+  double lat = 0.0;
+  double lng = 0.0;
 // on below line we have specified camera position
 static const CameraPosition _kGoogle = CameraPosition(
 	target: LatLng(7.8731, 80.7718),
@@ -28,13 +33,13 @@ static const CameraPosition _kGoogle = CameraPosition(
 
 // on below line we have created the list of markers
 final List<Marker> _markers = <Marker>[
-	const Marker(
-		markerId: MarkerId('1'),
-	position: LatLng(7.8731, 80.7718),
-	infoWindow: InfoWindow(
-		title: 'My Position',
-	)
-),
+// 	const Marker(
+// 		markerId: MarkerId('1'),
+// 	position: LatLng(7.8731, 80.7718),
+// 	infoWindow: InfoWindow(
+// 		title: 'My Position',
+// 	)
+// ),
 ];
 
 // created method for getting user current location
@@ -50,12 +55,126 @@ Future<Position> getUserCurrentLocation() async {
  signOut() async {
     await FirebaseAuth.instance.signOut();
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginPage()));
+        context, MaterialPageRoute(builder: (context) => const LoginPage()));
   }
+  @override
+  void initState() {
+    // TODO: implement initState
+    getUserCurrentLocation().then((value) async {
+     lat = value.latitude;
+      lng = value.longitude;
+    });
+    super.initState();
+
+  }
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 @override
 Widget build(BuildContext context) {
 	return Scaffold(
-	
+  key: _scaffoldKey,
+	endDrawer: Drawer(
+      child: Column(
+       
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 50),
+            height: 250,
+            decoration: const BoxDecoration(
+        gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      Colors.red,
+                      Colors.orange,
+                    ],
+                  ),
+        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(120)),
+      ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('assets/images/logo.png'),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Shide',
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(''),
+
+           ], ), ), ),
+          ListView(
+             shrinkWrap: true,
+            children: [
+             
+              ListTile(
+                leading: const Icon(Icons.home),
+                title: const Text('Passenger'),
+                onTap: () {
+                 setState(() {
+
+                    usermode = true;
+                  
+                 });
+                 Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.location_on),
+                title: const Text('Driver'),
+                onTap: () {
+                 setState(() {
+
+                    usermode = false;
+                  
+                 });
+                 Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.login),
+                title: const Text('Login'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Logout'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/logout');
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.person),
+                title: const Text('Profile'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/profile');
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: const Text('Settings'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/settings');
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+  ),
 	body: Stack(
     children: [
       SizedBox(
@@ -80,7 +199,7 @@ Widget build(BuildContext context) {
         ),
       ),
       Positioned(
-        bottom: 240,
+        bottom: usermode? 230 : 330,
         right: 20,
         child: FloatingActionButton(
           backgroundColor: Colors.orange,
@@ -112,7 +231,7 @@ Widget build(BuildContext context) {
 			});
 		});
 		},
-		child: const Icon(Icons.location_searching_outlined),
+		child: const Icon(Icons.gps_fixed),
 	),),
  
    Container(
@@ -132,86 +251,78 @@ Widget build(BuildContext context) {
         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(120)),
       ),
       child:    Container(
-                      margin: const EdgeInsets.only(top: 55, left: 70),
+                      margin: const EdgeInsets.only(top: 55, left: 170, right: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                      
-                          InkWell(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(children: const [
-                                  // Icon(
-                                  //   Icons.person_2_rounded,
-                                  //   color: Colors.white,
-                                  //   size: 10,
-                                  // ),
-                                  // Image.asset(
-                                  //   "name",
-                                  //   scale: 2,
-                                  // ),
-                                  Text(
-                                    "Passenger",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                ]),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  index = true;
-                                });
-                              }),
-                          const SizedBox(
-                            width: 60,
-                          ),
-                          InkWell(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(children: const [
-                                  // Icon(
-                                  //   Icons.drive_eta_rounded,
-                                  //   color: Colors.white,
-                                  //   size: 10,
-                                  // ),
-                                  Text(
-                                    "Driver",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                ]),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  index = false;
-                                });
-                              }),
-                          const SizedBox(
-                            width: 60,),
-
-                                   InkWell(
-                            child: const Icon(
-                              Icons.logout,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                            onTap: () {
-                              signOut();
-                            
-                            },
+                      usermode ?
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Column(children: const [
+                              // Icon(
+                              //   Icons.person_2_rounded,
+                              //   color: Colors.white,
+                              //   size: 10,
+                              // ),
+                              // Image.asset(
+                              //   "name",
+                              //   scale: 2,
+                              // ),
+                              Text(
+                                "Passenger",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ]),
                           )
+
+                        
+                        :  Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Column(children: const [
+                            // Icon(
+                            //   Icons.drive_eta_rounded,
+                            //   color: Colors.white,
+                            //   size: 10,
+                            // ),
+                            Text(
+                              "Driver",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ]),
+                        ),
+                         const Spacer(),
+
+                                   Container(
+                                    margin: EdgeInsets.only(bottom: 20),
+                                     child: InkWell(
+                                                               child: const Icon(
+                                                                 Icons.menu,
+                                                                 color: Colors.white,
+                                                                 size: 30,
+                                                               ),
+                                                               onTap: () {
+                                                                // signOut();
+                                                                  _scaffoldKey.currentState!.openEndDrawer();
+                                                              
+                                                               
+                                                               },
+                                                             ),
+                                   )
                         ],
                       ),
                     ),
  
     )
    ),
+   usermode ?
      Container(
      alignment: Alignment.bottomCenter,
      child: Container(
@@ -237,7 +348,7 @@ Widget build(BuildContext context) {
                 Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.only(left: 40,top: 20),
+                      margin: const EdgeInsets.only(left: 40,top: 20),
                       height: 15,
                       width: 15,
                       decoration: const BoxDecoration(
@@ -247,13 +358,13 @@ Widget build(BuildContext context) {
                       )),
             
              
-                    Container(margin: EdgeInsets.only(left: 40,),
+                    Container(margin: const EdgeInsets.only(left: 40,),
                     height: 60,
                     width: 2,
                     color: Colors.white,
                     ),
                     Container(
-                      margin: EdgeInsets.only(left: 40),
+                      margin: const EdgeInsets.only(left: 40),
                       height: 15,
                       width: 15,
                       decoration: const BoxDecoration(
@@ -266,24 +377,40 @@ Widget build(BuildContext context) {
                 Column(
                   children: [
                      Container(
-                       margin: EdgeInsets.only(left: 20, top: 20),
+                       margin: const EdgeInsets.only(left: 20, top: 20),
                                  //     height: height * 0.05,
                                   //    width: width * 0.4,
                                   height: 40,
                                   width: 290,
-                                      child: TextFormField(
-                                        
+                                      child: TextField(
+                                        style: const TextStyle(color: Colors.white),
                                    //     controller: lnameController,
                                         // onChanged: (value) {
                                         //   phonenumber = value;
                                         // },
                                         decoration: InputDecoration(
+                                          
                                           label: const Text("From",
                                           style: TextStyle(
                                             fontSize: 20,
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold),),
-                                    
+                                           
+
+                                      focusedBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                borderSide: const BorderSide(
+                                                  color: Colors.white,
+                                                  width: 3.0,
+                                                ),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                borderSide: const BorderSide(
+                                                  color: Colors.white,
+                                                  width: 3.0,
+                                                ),
+                                              ),
                                           border: OutlineInputBorder(
                                           
                                             borderRadius:
@@ -304,26 +431,47 @@ Widget build(BuildContext context) {
             
              
                  const SizedBox(height: 13,),
+                 
                   Container(
-                       margin: EdgeInsets.only(left: 20, top: 15),
+                       margin: const EdgeInsets.only(left: 20, top: 15),
                                  //     height: height * 0.05,
                                   //    width: width * 0.4,
                                   height: 40,
                                   width: 290,
-                                      child: TextFormField(
+                                      child: TextField(
+                                          style: const TextStyle(color: Colors.white),
                                    //     controller: lnameController,
                                         // onChanged: (value) {
                                         //   phonenumber = value;
                                         // },
                                         decoration: InputDecoration(
+                                        
                                           label: const Text("To",
+                                          
+                                          
                                           style: TextStyle(
                                             fontSize: 20,
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold),
-                                          ),
-                                          border: OutlineInputBorder(
                                             
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                borderSide: const BorderSide(
+                                                  color: Colors.white,
+                                                  width: 3.0,
+                                                ),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                borderSide: const BorderSide(
+                                                  color: Colors.white,
+                                                  width: 3.0,
+                                                ),
+                                              ),
+                                          border: OutlineInputBorder(
+                                              borderSide:
+                                                 const BorderSide(width: 3, color: Colors.white), 
                                             borderRadius:
                                                 BorderRadius.circular(30.0),
                                           ),
@@ -347,67 +495,129 @@ Widget build(BuildContext context) {
 
             ),
             const SizedBox(height: 20,),
-             Container(
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    width: 150,
-                    height: 40,
-                    child: DecoratedBox(
-                        decoration: BoxDecoration(
-                            gradient: const LinearGradient(colors: [
-                              Colors.orange,
-                              Colors.red,
-
-                              //add more colors
-                            ]),
-                            borderRadius: BorderRadius.circular(25),
-                            boxShadow: const <BoxShadow>[
-                              BoxShadow(
-                                  color: Color.fromRGBO(
-                                      0, 0, 0, 0.57), //shadow for button
-                                  blurRadius: 5) //blur radius of shadow
-                            ]),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              disabledForegroundColor:
-                                  Colors.transparent.withOpacity(0.38),
-                              disabledBackgroundColor:
-                                  Colors.transparent.withOpacity(0.12),
-                              shadowColor: Colors.transparent,
-                              //make color or elevated button transparent
+             Row(
+               children: [
+                const Spacer(),
+                            SizedBox(
+                              height: 30,
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    FloatingActionButton(
+                                       onPressed: () {
+                                        setState(() {
+                                          seats++;
+                                        });
+                                       },
+                                      backgroundColor: Colors.white,
+                                      child: Icon(Icons.add, color: Colors.black,),),
+                            
+                                    Text("$seats",
+                                        style: const TextStyle(fontSize: 27.0, color: Colors.white)),
+                            
+                                    FloatingActionButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          if (seats != 1) {
+                                            seats--;
+                                          }
+                                        });
+                                      },
+                                      child:  const Icon(
+                                        Icons.remove,
+                                        color: Colors.black,
+                                      ),
+                                      backgroundColor: Colors.white,),
+                                  ],
+                                ),
+                              ),
                             ),
-                            onPressed: () async {
-                             
-                              //  print(phoneNumberController.text);
-                              
-                                    nextScreeniOS(context, AvailiableRides());
-    
-                                 
-                              // if (!loading) {
-                              //   setState(() {
-                              //     index = false;
-                              //   });
-                              // }
+  
+                 Container(
+                      alignment: Alignment.center,
+                      child: SizedBox(
+                        width: 150,
+                        height: 40,
+                        child: DecoratedBox(
+                            decoration: BoxDecoration(
+                                gradient: const LinearGradient(colors: [
+                                  Colors.orange,
+                                  Colors.red,
 
-                              // print(phoneNumberController);
-                            },
-                            child: loading
-                                ? const CircularProgressIndicator()
-                                : const Padding(
-                                    padding: EdgeInsets.only(
-                                      top: 10,
-                                      bottom: 10,
-                                    ),
-                                    child: Text("Search Ride"),
-                                  ))
-                                  ),
-                  ),
-                ),
+                                  //add more colors
+                                ]),
+                                borderRadius: BorderRadius.circular(25),
+                                boxShadow: const <BoxShadow>[
+                                  BoxShadow(
+                                      color: Color.fromRGBO(
+                                          0, 0, 0, 0.57), //shadow for button
+                                      blurRadius: 5) //blur radius of shadow
+                                ]),
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  disabledForegroundColor:
+                                      Colors.transparent.withOpacity(0.38),
+                                  disabledBackgroundColor:
+                                      Colors.transparent.withOpacity(0.12),
+                                  shadowColor: Colors.transparent,
+                                  //make color or elevated button transparent
+                                ),
+                                onPressed: () async {
+                                 
+                                  //  print(phoneNumberController.text);
+                                  
+                                        nextScreeniOS(context, const AvailiableRides());
+    
+                                     
+                                  // if (!loading) {
+                                  //   setState(() {
+                                  //     index = false;
+                                  //   });
+                                  // }
+
+                                  // print(phoneNumberController);
+                                },
+                                child: loading
+                                    ? const CircularProgressIndicator()
+                                    : const Padding(
+                                        padding: EdgeInsets.only(
+                                          top: 10,
+                                          bottom: 10,
+                                        ),
+                                        child: Text("Search Ride", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
+                                      ))
+                                      ),
+                      ),
+                    ),
+                      const Spacer(),
+               ],
+             ),
           ],
         )
      ),
-   ),
+   )
+    : Container(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 320,
+        width: MediaQuery.of(context).size.width,
+  
+        //color: Colors.white,
+      // margin: EdgeInsets.only(bottom: 30),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      Colors.red,
+                      Colors.orange,
+                    ],
+                  ),
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40), ),
+    ), ),
+    ),
 
     
     ],
