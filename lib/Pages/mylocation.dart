@@ -10,9 +10,27 @@ import 'package:rideshareapp/Widget/NavBar.dart';
 import '../Utils/next_screen.dart';
 import '../Widget/navigation_screen.dart';
 import 'availiable_rides.dart';
+import 'getAddress.dart';
+
+  TextEditingController dfrom = TextEditingController();
+  TextEditingController dto = TextEditingController();
+  TextEditingController pfrom = TextEditingController();
+  TextEditingController pto = TextEditingController();
+  double? pflat;
+  double? pflng;
+  double? ptlat;
+  double? ptlng;
+
+  double? dflat;
+  double? dflng;
+  double? dtlat;
+  double? dtlng;
+
+String? tfeild;
 
 class HomePage extends StatefulWidget {
   String? phonenumber;
+  
  HomePage({Key? key, required this.phonenumber}) : super(key: key);
 
 @override
@@ -35,14 +53,17 @@ static const CameraPosition _kGoogle = CameraPosition(
 
 // on below line we have created the list of markers
 final List<Marker> _markers = <Marker>[
-// 	const Marker(
-// 		markerId: MarkerId('1'),
-// 	position: LatLng(7.8731, 80.7718),
-// 	infoWindow: InfoWindow(
-// 		title: 'My Position',
-// 	)
-// ),
+
+  
+	 Marker(
+		markerId: MarkerId('1'),
+	position: LatLng(lati!, longi!),
+	infoWindow: InfoWindow(
+		title: 'My Position',
+	)
+),
 ];
+
 
 
 
@@ -75,6 +96,11 @@ Future<Position> getUserCurrentLocation() async {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController dateinput = TextEditingController();
   TextEditingController timeinput = TextEditingController(); 
+
+ 
+
+
+
 @override
 Widget build(BuildContext context) {
 	return Scaffold(
@@ -383,6 +409,7 @@ Widget build(BuildContext context) {
                 ),
                 Column(
                   children: [
+                    
                      Container(
                        margin: const EdgeInsets.only(left: 20, top: 20),
                                  //     height: height * 0.05,
@@ -390,8 +417,9 @@ Widget build(BuildContext context) {
                                   height: 40,
                                   width: 290,
                                       child: TextField(
-                                        style: const TextStyle(color: Colors.white),
-                                   //     controller: lnameController,
+                                        style: const TextStyle(color: Colors.white,),
+                                        controller: pfrom,
+                                       
                                         // onChanged: (value) {
                                         //   phonenumber = value;
                                         // },
@@ -426,9 +454,15 @@ Widget build(BuildContext context) {
                                           ),
                                         ),
 
-                                        keyboardType: TextInputType.text,
+                                         readOnly: true, 
                                         onTap: () {
-                                          nextScreen(context, NavigationScreen(lat, lng) );
+                                           
+
+                                           nextScreeniOS(context,  const MyHomePage());
+                                         setState(() {
+                                            tfeild = "pfrom";
+                                          });
+                                          // print(address);
                                         },
                                         // validator: (String? value) {
                                         //   if (value!.length != 9)
@@ -438,7 +472,7 @@ Widget build(BuildContext context) {
                                       ),
                                     ),
             
-            
+         //   Text(address.toString()),
              
                  const SizedBox(height: 13,),
                  
@@ -450,7 +484,7 @@ Widget build(BuildContext context) {
                                   width: 290,
                                       child: TextField(
                                           style: const TextStyle(color: Colors.white),
-                                   //     controller: lnameController,
+                                        controller: pto,
                                         // onChanged: (value) {
                                         //   phonenumber = value;
                                         // },
@@ -487,7 +521,15 @@ Widget build(BuildContext context) {
                                           ),
                                         ),
 
-                                        keyboardType: TextInputType.text,
+                                         readOnly: true, 
+                                        onTap: () {
+                                           setState(() {
+                                            tfeild = "pto";
+                                          });
+
+                                           nextScreeniOS(context,  const MyHomePage());
+                                          
+                                        },
                                         // validator: (String? value) {
                                         //   if (value!.length != 9)
                                         //     return "enter valied phone number";
@@ -674,7 +716,7 @@ Widget build(BuildContext context) {
                                   width: 290,
                                       child: TextField(
                                         style: const TextStyle(color: Colors.white),
-                                   //     controller: lnameController,
+                                       controller: dfrom,
                                         // onChanged: (value) {
                                         //   phonenumber = value;
                                         // },
@@ -709,7 +751,18 @@ Widget build(BuildContext context) {
                                           ),
                                         ),
 
-                                        keyboardType: TextInputType.text,
+                                         readOnly: true, 
+                                        onTap: () {
+
+                                          setState(() {
+                                            tfeild = "dfrom";
+                                          });
+
+
+                                         
+                                           nextScreeniOS(context,  const MyHomePage());
+                                           
+                                        },
                                         // validator: (String? value) {
                                         //   if (value!.length != 9)
                                         //     return "enter valied phone number";
@@ -730,7 +783,7 @@ Widget build(BuildContext context) {
                                   width: 290,
                                       child: TextField(
                                           style: const TextStyle(color: Colors.white),
-                                   //     controller: lnameController,
+                                        controller: dto,
                                         // onChanged: (value) {
                                         //   phonenumber = value;
                                         // },
@@ -767,7 +820,16 @@ Widget build(BuildContext context) {
                                           ),
                                         ),
 
-                                        keyboardType: TextInputType.text,
+                                         readOnly: true, 
+                                        onTap: () {
+
+                                           setState(() {
+                                            tfeild = "dto";
+                                          });
+
+                                           nextScreeniOS(context,  const MyHomePage());
+                                          
+                                        },
                                         // validator: (String? value) {
                                         //   if (value!.length != 9)
                                         //     return "enter valied phone number";
@@ -1012,7 +1074,7 @@ Widget build(BuildContext context) {
                                  
                                   //  print(phoneNumberController.text);
                                   
-                                        nextScreeniOS(context, const AvailiableRides());
+                                        nextScreeniOS(context,  MyHomePage());
     
                                      
                                   // if (!loading) {
@@ -1049,4 +1111,75 @@ Widget build(BuildContext context) {
 
 	);
 }
+
+
+
 }
+  String? address;
+  double? lati;
+  double? longi;
+
+class Addres {
+ 
+  void setAddress(addres, lat, long ){
+
+  address = addres;
+  lati = lat;
+  longi = long;
+}
+setValues(){
+  switch(tfeild) { 
+   case "pfrom": { 
+      // setState(() {
+      //   pfrom.text = address!;
+      
+      // });
+      pfrom.text = address!;
+      pflat = lati!;
+      pflng = longi!;
+   } 
+   break; 
+  
+   case "pto": { 
+      // setState(() {
+      //   pto.text = address!;
+      
+      // });
+      pto.text = address!;
+      ptlat = lati!;
+      ptlng = longi!;
+   } 
+   
+   break; 
+        case "dfrom": { 
+      // setState(() {
+      //   dfrom.text = address!;
+      
+      // });
+      dfrom.text = address!;
+      dflat = lati!;
+      dflng = longi!;
+
+   } 
+   break; 
+  
+   case "dto": { 
+      // setState(() {
+      //   dto.text = address!;
+      
+      // });
+      dto.text = address!;
+      dtlat = lati!;
+      dtlng = longi!;
+   } 
+   break;
+   default: { 
+      //statements;  
+   }
+   break; 
+} 
+}
+
+}
+
+
