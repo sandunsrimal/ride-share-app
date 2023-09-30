@@ -47,9 +47,9 @@ class _MyHomePageState extends State<MyHomePage> {
             mapPickerController: mapPickerController,
             child: GoogleMap(
               myLocationEnabled: true,
-              zoomControlsEnabled: false,
+              zoomControlsEnabled: true,
               // hide location button
-              myLocationButtonEnabled: false,
+              myLocationButtonEnabled: true,
               mapType: MapType.normal,
               //  camera position
               initialCameraPosition: cameraPosition,
@@ -169,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   shadowColor: Colors.transparent,
                                   //make color or elevated button transparent
                                 ),
-                                onPressed: ()  {
+                                onPressed: () async  {
                                  
                                   //  print(phoneNumberController.text);
                                         print(
@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   print("Address: ${textController.text}");
                                      Addres().setAddress(textController.text, cameraPosition.target.latitude, cameraPosition.target.longitude);
                                      Addres().setValues();
-                                     Navigator.pop(context);
+                                     Navigator.pop(context, true);
     
                                      
                                   // if (!loading) {

@@ -7,10 +7,12 @@ import 'package:intl/intl.dart';
 import 'package:rideshareapp/Pages/login.dart';
 import 'package:rideshareapp/Widget/NavBar.dart';
 
+import '../Components/NetworkHelper.dart';
 import '../Utils/next_screen.dart';
 import '../Widget/navigation_screen.dart';
 import 'availiable_rides.dart';
 import 'getAddress.dart';
+import 'home.dart';
 
   TextEditingController dfrom = TextEditingController();
   TextEditingController dto = TextEditingController();
@@ -25,8 +27,19 @@ import 'getAddress.dart';
   double? dflng;
   double? dtlat;
   double? dtlng;
-
+ Completer<GoogleMapController> _controller = Completer();
 String? tfeild;
+
+ List<Marker> _markers = <Marker>[
+
+	 const Marker(
+		markerId: MarkerId('1'),
+	position: LatLng(0.0, 0.0),
+	infoWindow: InfoWindow(
+		title: 'My Position',
+	)
+),
+];
 
 class HomePage extends StatefulWidget {
   String? phonenumber;
@@ -38,7 +51,7 @@ _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-final Completer<GoogleMapController> _controller = Completer();
+
   bool index = true;
   bool loading = false; 
   bool usermode = true;
@@ -52,17 +65,7 @@ static const CameraPosition _kGoogle = CameraPosition(
 );
 
 // on below line we have created the list of markers
-final List<Marker> _markers = <Marker>[
 
-  
-	 Marker(
-		markerId: MarkerId('1'),
-	position: LatLng(lati!, longi!),
-	infoWindow: InfoWindow(
-		title: 'My Position',
-	)
-),
-];
 
 
 
@@ -97,9 +100,52 @@ Future<Position> getUserCurrentLocation() async {
   TextEditingController dateinput = TextEditingController();
   TextEditingController timeinput = TextEditingController(); 
 
- 
 
+   final List<LatLng> polyPoints = []; // For holding Co-ordinates as LatLng
+  final Set<Polyline> polyLines = {}; // For holding instance of Polyline
+// For holding instance of Marker
+  var dat;
 
+void getJsonData() async {
+    // Create an instance of Class NetworkHelper which uses http package
+    // for requesting data to the server and receiving response as JSON format
+
+    NetworkHelper network = NetworkHelper(
+      startLat: usermode? pflat! : dflat!,
+      startLng: usermode? pflng! : dflng!,
+      endLat: usermode? ptlat! : dtlat!,
+      endLng: usermode? ptlng! : dtlng!,
+    );
+
+    try {
+      // getData() returns a json Decoded data
+      dat = await network.getData();
+
+      // We can reach to our desired JSON data manually as following
+      LineString ls = LineString(dat['features'][0]['geometry']['coordinates']);
+
+      for (int i = 0; i < ls.lineString.length; i++) {
+        polyPoints.add(LatLng(ls.lineString[i][1], ls.lineString[i][0]));
+      }
+
+      if (polyPoints.length == ls.lineString.length) {
+        setPolyLines();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  setPolyLines() {
+    Polyline polyline = Polyline(
+      polylineId: PolylineId("polyline"),
+      color: Color(0xff0059c8),
+      points: polyPoints,
+      width: 5,
+    );
+    polyLines.add(polyline);
+    setState(() {});
+  }
 
 @override
 Widget build(BuildContext context) {
@@ -179,7 +225,7 @@ Widget build(BuildContext context) {
                 leading: const Icon(Icons.request_quote),
                 title: const Text('Ride Requests'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/login');
+                  nextScreen(context, AvailiableRides());
                 },
               ),
               ListTile(
@@ -224,6 +270,7 @@ Widget build(BuildContext context) {
         myLocationEnabled: true,
         // on below line setting compass enabled.
         compassEnabled: true,
+        polylines: polyLines,
         // on below line specifying controller on map complete.
         onMapCreated: (GoogleMapController controller){
             _controller.complete(controller);
@@ -243,7 +290,7 @@ Widget build(BuildContext context) {
 			// marker added for current users location
 			_markers.add(
 				Marker(
-				markerId: const MarkerId("2"),
+				markerId: const MarkerId("1"),
 				position: LatLng(value.latitude, value.longitude),
 				infoWindow: const InfoWindow(
 					title: 'My Current Location',
@@ -455,13 +502,15 @@ Widget build(BuildContext context) {
                                         ),
 
                                          readOnly: true, 
-                                        onTap: () {
-                                           
+                                        onTap: ()  {
+                                          
+                                            tfeild = "pfrom";
+                                            
+                                         
 
                                            nextScreeniOS(context,  const MyHomePage());
-                                         setState(() {
-                                            tfeild = "pfrom";
-                                          });
+                                         
+                                          
                                           // print(address);
                                         },
                                         // validator: (String? value) {
@@ -522,12 +571,25 @@ Widget build(BuildContext context) {
                                         ),
 
                                          readOnly: true, 
-                                        onTap: () {
-                                           setState(() {
+                                        onTap: ()  {
+
+                                          setState(() {
                                             tfeild = "pto";
                                           });
-
+                                          
                                            nextScreeniOS(context,  const MyHomePage());
+                                          
+                                          
+                                           print("object");
+                                           print("object");
+
+                                           print("object");
+
+                                           print(tfeild);
+
+                                        //   nextScreeniOS(context,  const MyHomePage());
+                                          
+                                            
                                           
                                         },
                                         // validator: (String? value) {
@@ -619,11 +681,20 @@ Widget build(BuildContext context) {
                                   shadowColor: Colors.transparent,
                                   //make color or elevated button transparent
                                 ),
-                                onPressed: () async {
-                                 
+                                onPressed: ()  {
+
+                                  print("object");
+                                  print("object");
+
+                                  print("object");
+
+                                 print(pflat);
+                                  print(pflng);
+                                  print(ptlat);
+                                  print(ptlng);
                                   //  print(phoneNumberController.text);
-                                  
-                                        nextScreeniOS(context, const AvailiableRides());
+                                 getJsonData();
+                                      // nextScreeniOS(context, const AvailiableRides());
     
                                      
                                   // if (!loading) {
@@ -752,7 +823,7 @@ Widget build(BuildContext context) {
                                         ),
 
                                          readOnly: true, 
-                                        onTap: () {
+                                        onTap: ()async {
 
                                           setState(() {
                                             tfeild = "dfrom";
@@ -821,7 +892,7 @@ Widget build(BuildContext context) {
                                         ),
 
                                          readOnly: true, 
-                                        onTap: () {
+                                        onTap: () async{
 
                                            setState(() {
                                             tfeild = "dto";
@@ -1073,8 +1144,8 @@ Widget build(BuildContext context) {
                                 onPressed: () async {
                                  
                                   //  print(phoneNumberController.text);
-                                  
-                                        nextScreeniOS(context,  MyHomePage());
+                                  getJsonData();
+                                     //   nextScreeniOS(context,  MyHomePage());
     
                                      
                                   // if (!loading) {
@@ -1119,7 +1190,7 @@ Widget build(BuildContext context) {
   double? lati;
   double? longi;
 
-class Addres {
+class Addres  {
  
   void setAddress(addres, lat, long ){
 
@@ -1127,59 +1198,134 @@ class Addres {
   lati = lat;
   longi = long;
 }
-setValues(){
-  switch(tfeild) { 
-   case "pfrom": { 
+setValues() async {
+  if(tfeild=='pfrom') { 
+  
       // setState(() {
       //   pfrom.text = address!;
       
       // });
-      pfrom.text = address!;
+    
+
       pflat = lati!;
       pflng = longi!;
+      pfrom.text = address!;
+      	_markers.add(
+				Marker(
+				markerId: const MarkerId("2"),
+				position: LatLng(lati!, longi!),
+				infoWindow: const InfoWindow(
+					title: 'From',
+				),
+				),
+        
+			);
+     CameraPosition cameraPosition =  CameraPosition(
+			target: LatLng(lati!, longi!),
+			zoom: 10,
+			);
+
+			final GoogleMapController controller = await _controller.future;
+			controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    
    } 
-   break; 
-  
-   case "pto": { 
+   
+  if(tfeild=='pto') { 
       // setState(() {
       //   pto.text = address!;
       
       // });
-      pto.text = address!;
+    
       ptlat = lati!;
       ptlng = longi!;
+
+      print(ptlat);
+      print(ptlat);
+      print(ptlat);
+      pto.text = address!;
+      	_markers.add(
+				Marker(
+				markerId: const MarkerId("3"),
+				position: LatLng(lati!, longi!),
+				infoWindow: const InfoWindow(
+					title: 'To',
+				),
+				),
+
+        
+			);
+
+      CameraPosition cameraPosition =  CameraPosition(
+			target: LatLng(lati!, longi!),
+			zoom: 10,
+			);
+
+			final GoogleMapController controller = await _controller.future;
+			controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+      
    } 
    
-   break; 
-        case "dfrom": { 
+    if(tfeild=='dfrom'){ 
       // setState(() {
       //   dfrom.text = address!;
       
       // });
-      dfrom.text = address!;
       dflat = lati!;
       dflng = longi!;
+      dfrom.text = address!;
+      	_markers.add(
+				Marker(
+				markerId: const MarkerId("4"),
+				position: LatLng(lati!, longi!),
+				infoWindow: const InfoWindow(
+					title: 'From',
+				),
+				),
+        
+			);
+      CameraPosition cameraPosition =  CameraPosition(
+			target: LatLng(lati!, longi!),
+			zoom: 10,
+			);
+
+			final GoogleMapController controller = await _controller.future;
+			controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
    } 
-   break; 
+ 
   
-   case "dto": { 
+     if(tfeild=='dto') { 
       // setState(() {
       //   dto.text = address!;
       
       // });
-      dto.text = address!;
       dtlat = lati!;
       dtlng = longi!;
+      dto.text = address!;
+      	_markers.add(
+				Marker(
+				markerId: const MarkerId("5"),
+				position: LatLng(lati!, longi!),
+				infoWindow: const InfoWindow(
+					title: 'To',
+				),
+				),
+        
+			);
+      CameraPosition cameraPosition =  CameraPosition(
+			target: LatLng(lati!, longi!),
+			zoom: 10,
+			);
+
+			final GoogleMapController controller = await _controller.future;
+			controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+     
    } 
-   break;
-   default: { 
-      //statements;  
-   }
-   break; 
+   
+  
 } 
 }
 
-}
+
 
 
