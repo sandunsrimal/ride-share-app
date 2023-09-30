@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'RideShare',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
         inputDecorationTheme: const InputDecorationTheme(
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(width: 3, color: Colors.orange),
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(30))),
         ),
       ),
-      home: SplashScreen(),
+      home: const SplashScreen(),
       // home:     SignupPage(phoneNo: '766033817',),
       // home: SignupPage(
       //   phoneNo: '766033817',

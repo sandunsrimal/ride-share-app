@@ -62,10 +62,44 @@ class _AvailiableRidesState extends State<AvailiableRides> {
  
     )
    ),
-          Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.all( 20),
+   Expanded(
+    
+     child: ListView.builder(
+      shrinkWrap: true,
+     itemCount: 4,
+     itemBuilder: (context, index) {
+      return Listitems();
+     },
+   ),
+   ),
+          // Container(
+          // child:   ListView.builder(
+          // itemCount: 3,
+          // padding: EdgeInsets.zero,
+          // itemBuilder: (context, index) {
+          //   return  Listitems();
+          // })
+          // ),
+           
+        ],
+      ),
+    );
+  }
+}
+
+class Listitems extends StatefulWidget {
+  const Listitems({super.key});
+
+  @override
+  State<Listitems> createState() => _ListitemsState();
+}
+
+class _ListitemsState extends State<Listitems> {
+    bool loading = false;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+                margin: const EdgeInsets.only( bottom: 20,left: 20,right: 20),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.orange,
                   width: 3),
@@ -250,7 +284,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                                           top: 10,
                                           bottom: 10,
                                         ),
-                                        child: Text("View Route"),
+                                        child: Text("View Route", style: TextStyle(color: Colors.white),),
                                       ))
                                       ),
                   ),
@@ -315,7 +349,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                                           top: 10,
                                           bottom: 10,
                                         ),
-                                        child: Text("Send a Request"),
+                                        child: Text("Send a Request", style: TextStyle(color: Colors.white),),
                                       ))
                                       ),
                   ),
@@ -323,13 +357,6 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                       ],
                     ),
                 ])
-              ),
-             
-            ],
-          ),
-           
-        ],
-      ),
-    );
+              );
   }
 }
