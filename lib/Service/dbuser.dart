@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
-  String timestamp = DateTime.now().millisecondsSinceEpoch as String;
+  int timestamp = DateTime.now().millisecondsSinceEpoch;
 
   Future<String?> addUser({
     required String firstname,
@@ -15,12 +15,13 @@ class DatabaseService {
     required String age,
     required String gender,
     required String accountstatus,
+    required String dpurl,
   }) async {
     try {
       CollectionReference users =
           FirebaseFirestore.instance.collection('users');
       // Call the user's CollectionReference to add a new user
-      await users.doc(timestamp).set({
+      await users.doc("$timestamp").set({
         'first_name': firstname,
         'last_name': lastname,
         'email': email,
@@ -32,6 +33,7 @@ class DatabaseService {
         'age': age,
         'gender': gender,
         'account_status': accountstatus,
+        'dp_url': dpurl, 
       });
       return 'success';
     } catch (e) {

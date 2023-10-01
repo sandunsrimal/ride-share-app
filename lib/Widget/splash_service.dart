@@ -17,7 +17,7 @@ class SplashServices {
               context,
               MaterialPageRoute(
                   builder: (context) => HomePage(
-                        phonenumber: auth.currentUser!.phoneNumber.toString(),
+                        phonenumber: auth.currentUser!.phoneNumber,
                       ))));
       // Navigator.of(context).pushReplacement(
       //     MaterialPageRoute(builder: (context) => SignupPage()));
