@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:rideshareapp/Pages/RideHistory.dart';
 import 'package:rideshareapp/Pages/login.dart';
+import 'package:rideshareapp/Pages/paymentpage.dart';
+import 'package:rideshareapp/Pages/settingPage.dart';
 import 'package:rideshareapp/Widget/NavBar.dart';
 
 import '../Components/NetworkHelper.dart';
@@ -232,21 +235,28 @@ Widget build(BuildContext context) {
                 leading: const Icon(Icons.history),
                 title: const Text('Ride History'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/logout');
+                   nextScreen(context, RideHistory());
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.monetization_on),
                 title: const Text('Payments'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/profile');
+                nextScreen(context, PaymentPage());
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.settings),
                 title: const Text('Settings'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/settings');
+                  nextScreen(context, SettingsPage());
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Logout'),
+                onTap: () {
+                 signOut();
                 },
               ),
             ],
