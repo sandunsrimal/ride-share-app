@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -26,8 +27,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
 class SignupPage extends StatefulWidget {
+  String? phoneNo;
   SignupPage({super.key, required this.phoneNo});
-  String phoneNo;
+  
   @override
   State<SignupPage> createState() => _SignupPageState();
 }
@@ -50,6 +52,56 @@ class _SignupPageState extends State<SignupPage> {
   bool index = true;
   String? gendername;
   List<Gender> genders = <Gender>[];
+
+String? name;
+  String? imageUrl;
+
+  File? imageFile;
+  String? fileName;
+  bool loadingdp = false;
+
+
+  var formKey = GlobalKey<FormState>();
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+  var nameCtrl = TextEditingController();
+
+  Future pickImage() async {
+    final _imagePicker = ImagePicker();
+    var imagepicked = await _imagePicker.pickImage(
+        source: ImageSource.gallery, maxHeight: 200, maxWidth: 200);
+
+    if (imagepicked != null) {
+      setState(() {
+        imageFile = File(imagepicked.path);
+        fileName = (imageFile!.path);
+     
+        uploadPicture();
+      
+      });
+    } else {
+      print('No image has is selected!');
+    }
+  }
+
+  Future uploadPicture() async {
+    print("Upload Picture function called");
+    Reference storageReference =
+        FirebaseStorage.instance.ref().child('Profile Pictures/$fileName');
+
+    UploadTask uploadTask = storageReference.putFile(imageFile!);
+
+    await uploadTask.whenComplete(() async {
+      var _url = await storageReference.getDownloadURL();
+      var _imageUrl = _url.toString();
+      print("Image uploaded");
+
+      setState(() {
+        imageUrl = _imageUrl;
+      });
+    });
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -65,766 +117,819 @@ class _SignupPageState extends State<SignupPage> {
     return Scaffold(
     
       body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Container(
-          height: height,
-          child: Column(
-            children: [
-              Container(
-                height: height * 0.2,
-                width: width,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      Colors.red,
-                      Colors.orange,
-                    ],
-                  ),
-                  // color: Colors.orange,
-                  borderRadius: BorderRadius.only(
-                    // bottomRight: Radius.circular(100.0),
-                    bottomLeft: Radius.circular(120.0),
-                  ),
+       // physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            Container(
+             
+              height: height * 0.18,
+              width: width,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    Colors.red,
+                    Colors.orange,
+                  ],
                 ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 20,
-                      top: 60,
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                            color: Colors.white),
-                        onPressed: () {
-                          auth.signOut().then((value) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginPage()));
-                          }).onError((error, stackTrace) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Error"),
-                                  content: Text(error.toString()),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text("close"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
+                // color: Colors.orange,
+                borderRadius: BorderRadius.only(
+                  // bottomRight: Radius.circular(100.0),
+                  bottomLeft: Radius.circular(120.0),
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 20,
+                    top: 60,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                          color: Colors.white),
+                      onPressed: () {
+                        auth.signOut().then((value) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginPage()));
+                        }).onError((error, stackTrace) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Error"),
+                                content: Text(error.toString()),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text("close"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        });
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 70, left: 70),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Column(children: const [
+                                Icon(
+                                  Icons.person_2_rounded,
+                                  color: Colors.white,
+                                  size: 50,
+                                ),
+                                // Image.asset(
+                                //   "name",
+                                //   scale: 2,
+                                // ),
+                                Text(
+                                  "Passenger",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ]),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                index = true;
+                              });
+                            }),
+                        const SizedBox(
+                          width: 60,
+                        ),
+                        InkWell(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Column(children: const [
+                                Icon(
+                                  Icons.drive_eta_rounded,
+                                  color: Colors.white,
+                                  size: 50,
+                                ),
+                                Text(
+                                  "Driver",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ]),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                index = false;
+                              });
+                            }),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+           
+            index
+                ? SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 20,  bottom: 20),
+                   
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Container(
+                              alignment: Alignment.center,
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                      InkWell(
+                          child: CircleAvatar(
+                            radius: 70,
+                            backgroundColor: Colors.grey[300],
+                            child: Container(
+                              height: 120,
+                              width: 120,
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(width: 1, color: Colors.grey[800]!),
+                                  color: Colors.grey[500],
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: (imageFile == null
+                                      
+                                          ? gendername=='Female' ? NetworkImage("https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/woman.png?alt=media&token=cebffdb9-3962-441a-baa6-0d05a3bb017d&_gl=1*1xlaw75*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDEwNDkuNDQuMC4w") 
+                                          : NetworkImage("https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/man-2.png?alt=media&token=b14bd4ee-b3b4-4935-aeb5-c72ce654b410&_gl=1*1hgtj3f*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDEwNjcuMjYuMC4w")
+                                        //      ? CachedNetworkImageProvider("https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg?alt=media&token=02cea9d2-fa69-449f-928c-b320a758069e&_gl=1*162panl*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDAzMzMuNDguMC4w")
+                                              : FileImage(imageFile!))
+                                          as ImageProvider<Object>,
+                                      fit: BoxFit.cover)),
+                              child: Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Icon(
+                                    Icons.edit,
+                                    size: 30,
+                                    color: Colors.black,
+                                  )),
+                            ),
+                          ),
+                          onTap: () {
+                            pickImage();
+                           
+                          },
+                                  ),
+                                    const Text(
+                                      "Sign up as a Passenger",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height: height * 0.05,
+                                          width: width * 0.4,
+                                          child: TextFormField(
+                                            controller: fnameController,
+                                            // onChanged: (value) {
+                                            //   phonenumber = value;
+                                            // },
+                                            decoration: InputDecoration(
+                                              hintText: 'Sandun',
+                                              labelText: 'First Name',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30.0),
+                                              ),
+                                            ),
+                    
+                                            keyboardType: TextInputType.text,
+                                            // validator: (String? value) {
+                                            //   if (value!.length != 9)
+                                            //     return "enter valied phone number";
+                                            //   // return null;
+                                            // },
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 22,
+                                        ),
+                                        SizedBox(
+                                          height: height * 0.05,
+                                          width: width * 0.4,
+                                          child: TextFormField(
+                                            controller: lnameController,
+                                            // onChanged: (value) {
+                                            //   phonenumber = value;
+                                            // },
+                                            decoration: InputDecoration(
+                                              hintText: 'Srimal',
+                                              labelText: 'Last Name',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30.0),
+                                              ),
+                                            ),
+                    
+                                            keyboardType: TextInputType.text,
+                                            // validator: (String? value) {
+                                            //   if (value!.length != 9)
+                                            //     return "enter valied phone number";
+                                            //   // return null;
+                                            // },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    SizedBox(
+                                      height: height * 0.05,
+                                      width: width * 0.85,
+                                      child: TextFormField(
+                                        controller: emailController,
+                                        // onChanged: (value) {
+                                        //   phonenumber = value;
+                                        // },
+                                        decoration: InputDecoration(
+                                          hintText: 'Sandun@email.com',
+                                          labelText: 'Email',
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(30.0),
+                                          ),
+                                        ),
+                    
+                                        keyboardType: TextInputType.text,
+                                        // validator: (String? value) {
+                                        //   if (value!.length != 9)
+                                        //     return "enter valied phone number";
+                                        //   // return null;
+                                        // },
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height: height * 0.05,
+                                          width: width * 0.69,
+                                          child: TextFormField(
+                                            controller: idController,
+                                            // onChanged: (value) {
+                                            //   phonenumber = value;
+                                            // },
+                                            decoration: InputDecoration(
+                                              hintText: '123456789v',
+                                              labelText: 'NIC',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30.0),
+                                              ),
+                                            ),
+                    
+                                            keyboardType: TextInputType.number,
+                                            // validator: (String? value) {
+                                            //   if (value!.length != 9)
+                                            //     return "enter valied phone number";
+                                            //   // return null;
+                                            // },
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                         IDupload()
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    SizedBox(
+                                      height: 40,
+                                      //   width: width,
+                                      child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          shrinkWrap: true,
+                                          itemCount: genders.length,
+                                          itemBuilder: (context, index) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0, right: 8),
+                                              child: InkWell(
+                                                // splashColor: Colors.transparent,
+                                                onTap: () {
+                                                  setState(() {
+                                                    genders.forEach((gender) =>
+                                                        gender.isSelected = false);
+                                                    genders[index].isSelected = true;
+                                                    gendername = genders[index].name;
+                                                    print(gendername);
+                                                  });
+                                                },
+                                                child: CustomRadio(genders[index]),
+                                              ),
+                                            );
+                                          }),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                     SizedBox(
+                                      height: height * 0.05,
+                                      width: width * 0.85,
+                                      child: TextFormField(
+                                        controller: ageController,
+                                        // onChanged: (value) {
+                                        //   phonenumber = value;
+                                        // },
+                                        decoration: InputDecoration(
+                                          hintText: '2000',
+                                          labelText: 'Birth Year',
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(30.0),
+                                          ),
+                                        ),
+                    
+                                        keyboardType: TextInputType.number,
+                                        // validator: (String? value) {
+                                        //   if (value!.length != 9)
+                                        //     return "enter valied phone number";
+                                        //   // return null;
+                                        // },
+                                      ),
+                                    ),
+                                     
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    SizedBox(
+                                      height: height * 0.05,
+                                      width: width * 0.85,
+                                      child: TextFormField(
+                                        controller: addressController,
+                                        // onChanged: (value) {
+                                        //   phonenumber = value;
+                                        // },
+                                        decoration: InputDecoration(
+                                          hintText: 'B76,Parangiyawadiya,Anuradhapura District,Sri Lanka',
+                                          labelText: 'Home Address',
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(30.0),
+                                          ),
+                                        ),
+                    
+                                        keyboardType: TextInputType.text,
+                                        // validator: (String? value) {
+                                        //   if (value!.length != 9)
+                                        //     return "enter valied phone number";
+                                        //   // return null;
+                                        // },
+                                      ),
+                                    ),
+                                     
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    SizedBox(
+                                      height: height * 0.05,
+                                      width: width * 0.85,
+                                      child: TextFormField(
+                                        controller: homenumber,
+                                        // onChanged: (value) {
+                                        //   phonenumber = value;
+                                        // },
+                                        decoration: InputDecoration(
+                                          hintText: '0766033817',
+                                          labelText: 'Home contact number',
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(30.0),
+                                          ),
+                                        ),
+                    
+                                        keyboardType: TextInputType.number,
+                                        // validator: (String? value) {
+                                        //   if (value!.length != 9)
+                                        //     return "enter valied phone number";
+                                        //   // return null;
+                                        // },
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                  
+                                    SizedBox(
+                                      width: 200,
+                                      height: 50,
+                                      child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                              gradient: const LinearGradient(colors: [
+                                                Colors.orange,
+                                                Colors.red,
+                    
+                                                //add more colors
+                                              ]),
+                                              borderRadius: BorderRadius.circular(25),
+                                              boxShadow: const <BoxShadow>[
+                                                BoxShadow(
+                                                    color: Color.fromRGBO(0, 0, 0,
+                                                        0.57), //shadow for button
+                                                    blurRadius:
+                                                        5) //blur radius of shadow
+                                              ]),
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.transparent,
+                                              disabledForegroundColor:
+                                                  Colors.transparent.withOpacity(0.38),
+                                              disabledBackgroundColor:
+                                                  Colors.transparent.withOpacity(0.12),
+                                              shadowColor: Colors.transparent,
+                                              //make color or elevated button transparent
+                                            ),
+                                            onPressed: () async {
+                                              
+                                               setState(() {
+                              loading=true;
+                            });
+                               
+                                 print("Cklicked");
+                                 print("Cklicked");
+
+                                 print("Cklicked");
+
+                          final result = await DatabaseService().addUser(
+                          firstname: fnameController.text,
+                          lastname: lnameController.text,
+                          email: emailController.text,
+                          homenumber: homenumber.text,
+                          phonenumber: widget.phoneNo!,
+                          usertype: 'passenger',
+                          nic: idController.text,
+                          nicimage: IDimageurl!,
+                          gender: gendername!,
+                          age: ageController.text,
+                          accountstatus: "pending",
+                          dpurl: imageFile == null ? genders=='Female' 
+                          ? "https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/woman.png?alt=media&token=cebffdb9-3962-441a-baa6-0d05a3bb017d&_gl=1*1xlaw75*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDEwNDkuNDQuMC4w" 
+                          : "https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/man-2.png?alt=media&token=b14bd4ee-b3b4-4935-aeb5-c72ce654b410&_gl=1*1hgtj3f*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDEwNjcuMjYuMC4w" 
+                          : imageUrl!,
+                          // age: ageController.text,
+                          );
+                          print(result);
+                          if (result!.contains('success')) {
+                            setState(() {
+                              loading=false;
+                            });
+                    
+                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo,)));
+                          }
+                               
+                                  
+                               
+                                },
+                                            child: 
+                                            loading ? const CircularProgressIndicator()
+                                            : const Text(
+                                              "Sign up",
+                                              style: TextStyle(fontSize: 15, color: Colors.white),
+                                            ),
+                                          )),
                                     ),
                                   ],
-                                );
-                              },
-                            );
-                          });
-                        },
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 90, left: 70),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(children: const [
-                                  Icon(
-                                    Icons.person_2_rounded,
-                                    color: Colors.white,
-                                    size: 50,
-                                  ),
-                                  // Image.asset(
-                                  //   "name",
-                                  //   scale: 2,
-                                  // ),
-                                  Text(
-                                    "Passenger",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                ]),
+                                ),
                               ),
-                              onTap: () {
-                                setState(() {
-                                  index = true;
-                                });
-                              }),
-                          const SizedBox(
-                            width: 60,
-                          ),
-                          InkWell(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(children: const [
-                                  Icon(
-                                    Icons.drive_eta_rounded,
-                                    color: Colors.white,
-                                    size: 50,
-                                  ),
-                                  Text(
-                                    "Driver",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                ]),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  index = false;
-                                });
-                              }),
+                            ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              index
-                  ? Container(
-                      alignment: Alignment.center,
-                      child: Center(
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Sign up as a Passenger",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  height: height * 0.05,
-                                  width: width * 0.4,
-                                  child: TextFormField(
-                                    controller: fnameController,
-                                    // onChanged: (value) {
-                                    //   phonenumber = value;
-                                    // },
-                                    decoration: InputDecoration(
-                                      hintText: 'Sandun',
-                                      labelText: 'First Name',
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
+                  ),
+                )
+                : Container(
+                    alignment: Alignment.center,
+                    child: Center(
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Sign up as a Driver",
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: height * 0.05,
+                                width: width * 0.4,
+                                child: TextFormField(
+                                  controller: fnameController,
+                                  // onChanged: (value) {
+                                  //   phonenumber = value;
+                                  // },
+                                  decoration: InputDecoration(
+                                    hintText: 'Sandun',
+                                    labelText: 'First Name',
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(30.0),
                                     ),
-
-                                    keyboardType: TextInputType.number,
-                                    // validator: (String? value) {
-                                    //   if (value!.length != 9)
-                                    //     return "enter valied phone number";
-                                    //   // return null;
-                                    // },
                                   ),
+      
+                                  keyboardType: TextInputType.number,
+                                  // validator: (String? value) {
+                                  //   if (value!.length != 9)
+                                  //     return "enter valied phone number";
+                                  //   // return null;
+                                  // },
                                 ),
-                                const SizedBox(
-                                  width: 22,
-                                ),
-                                SizedBox(
-                                  height: height * 0.05,
-                                  width: width * 0.4,
-                                  child: TextFormField(
-                                    controller: lnameController,
-                                    // onChanged: (value) {
-                                    //   phonenumber = value;
-                                    // },
-                                    decoration: InputDecoration(
-                                      hintText: 'Srimal',
-                                      labelText: 'Last Name',
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
+                              ),
+                              const SizedBox(
+                                width: 22,
+                              ),
+                              SizedBox(
+                                height: height * 0.05,
+                                width: width * 0.4,
+                                child: TextFormField(
+                                  controller: lnameController,
+                                  // onChanged: (value) {
+                                  //   phonenumber = value;
+                                  // },
+                                  decoration: InputDecoration(
+                                    hintText: 'Srimal',
+                                    labelText: 'Last Name',
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(30.0),
                                     ),
-
-                                    keyboardType: TextInputType.number,
-                                    // validator: (String? value) {
-                                    //   if (value!.length != 9)
-                                    //     return "enter valied phone number";
-                                    //   // return null;
-                                    // },
                                   ),
+      
+                                  keyboardType: TextInputType.number,
+                                  // validator: (String? value) {
+                                  //   if (value!.length != 9)
+                                  //     return "enter valied phone number";
+                                  //   // return null;
+                                  // },
                                 ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            SizedBox(
-                              height: height * 0.05,
-                              width: width * 0.85,
-                              child: TextFormField(
-                                controller: emailController,
-                                // onChanged: (value) {
-                                //   phonenumber = value;
-                                // },
-                                decoration: InputDecoration(
-                                  hintText: 'Sandun@email.com',
-                                  labelText: 'Email',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                ),
-
-                                keyboardType: TextInputType.text,
-                                // validator: (String? value) {
-                                //   if (value!.length != 9)
-                                //     return "enter valied phone number";
-                                //   // return null;
-                                // },
                               ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          SizedBox(
+                            height: height * 0.05,
+                            width: width * 0.85,
+                            child: TextFormField(
+                              controller: emailController,
+                              // onChanged: (value) {
+                              //   phonenumber = value;
+                              // },
+                              decoration: InputDecoration(
+                                hintText: 'Sandun@email.com',
+                                labelText: 'Email',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                              ),
+      
+                              keyboardType: TextInputType.text,
+                              // validator: (String? value) {
+                              //   if (value!.length != 9)
+                              //     return "enter valied phone number";
+                              //   // return null;
+                              // },
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  height: height * 0.05,
-                                  width: width * 0.69,
-                                  child: TextFormField(
-                                    controller: idController,
-                                    // onChanged: (value) {
-                                    //   phonenumber = value;
-                                    // },
-                                    decoration: InputDecoration(
-                                      hintText: '123456789v',
-                                      labelText: 'NIC',
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: height * 0.05,
+                                width: width * 0.69,
+                                child: TextFormField(
+                                  controller: idController,
+                                  // onChanged: (value) {
+                                  //   phonenumber = value;
+                                  // },
+                                  decoration: InputDecoration(
+                                    hintText: '123456789',
+                                    labelText: 'Driving License',
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(30.0),
                                     ),
-
-                                    keyboardType: TextInputType.number,
-                                    // validator: (String? value) {
-                                    //   if (value!.length != 9)
-                                    //     return "enter valied phone number";
-                                    //   // return null;
-                                    // },
                                   ),
+      
+                                  keyboardType: TextInputType.number,
+                                  // validator: (String? value) {
+                                  //   if (value!.length != 9)
+                                  //     return "enter valied phone number";
+                                  //   // return null;
+                                  // },
                                 ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                 IDupload()
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            SizedBox(
-                              height: 40,
-                              //   width: width,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  shrinkWrap: true,
-                                  itemCount: genders.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, right: 8),
-                                      child: InkWell(
-                                        // splashColor: Colors.transparent,
-                                        onTap: () {
-                                          setState(() {
-                                            genders.forEach((gender) =>
-                                                gender.isSelected = false);
-                                            genders[index].isSelected = true;
-                                            gendername = genders[index].name;
-                                            print(gendername);
-                                          });
-                                        },
-                                        child: CustomRadio(genders[index]),
-                                      ),
-                                    );
-                                  }),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                             SizedBox(
-                              height: height * 0.05,
-                              width: width * 0.85,
-                              child: TextFormField(
-                                controller: ageController,
-                                // onChanged: (value) {
-                                //   phonenumber = value;
-                                // },
-                                decoration: InputDecoration(
-                                  hintText: '2000',
-                                  labelText: 'Birth Year',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                ),
-
-                                keyboardType: TextInputType.number,
-                                // validator: (String? value) {
-                                //   if (value!.length != 9)
-                                //     return "enter valied phone number";
-                                //   // return null;
-                                // },
                               ),
-                            ),
-                             
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            SizedBox(
-                              height: height * 0.05,
-                              width: width * 0.85,
-                              child: TextFormField(
-                                controller: addressController,
-                                // onChanged: (value) {
-                                //   phonenumber = value;
-                                // },
-                                decoration: InputDecoration(
-                                  hintText: 'B76,Parangiyawadiya,Anuradhapura District,Sri Lanka',
-                                  labelText: 'Home Address',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                ),
-
-                                keyboardType: TextInputType.text,
-                                // validator: (String? value) {
-                                //   if (value!.length != 9)
-                                //     return "enter valied phone number";
-                                //   // return null;
-                                // },
+                              const SizedBox(
+                                width: 10,
                               ),
-                            ),
-                             
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            SizedBox(
-                              height: height * 0.05,
-                              width: width * 0.85,
-                              child: TextFormField(
-                                controller: homenumber,
-                                // onChanged: (value) {
-                                //   phonenumber = value;
-                                // },
-                                decoration: InputDecoration(
-                                  hintText: '0766033817',
-                                  labelText: 'Home contact number',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                ),
-
-                                keyboardType: TextInputType.number,
-                                // validator: (String? value) {
-                                //   if (value!.length != 9)
-                                //     return "enter valied phone number";
-                                //   // return null;
-                                // },
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                          
-                            SizedBox(
-                              width: 200,
-                              height: 50,
-                              child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                      gradient: const LinearGradient(colors: [
-                                        Colors.orange,
-                                        Colors.red,
-
-                                        //add more colors
-                                      ]),
-                                      borderRadius: BorderRadius.circular(25),
-                                      boxShadow: const <BoxShadow>[
-                                        BoxShadow(
-                                            color: Color.fromRGBO(0, 0, 0,
-                                                0.57), //shadow for button
-                                            blurRadius:
-                                                5) //blur radius of shadow
-                                      ]),
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.transparent,
-                                      disabledForegroundColor:
-                                          Colors.transparent.withOpacity(0.38),
-                                      disabledBackgroundColor:
-                                          Colors.transparent.withOpacity(0.12),
-                                      shadowColor: Colors.transparent,
-                                      //make color or elevated button transparent
+                               IDupload()
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            height: 40,
+                            //   width: width,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: genders.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0, right: 8),
+                                    child: InkWell(
+                                      // splashColor: Colors.transparent,
+                                      onTap: () {
+                                        setState(() {
+                                          genders.forEach((gender) =>
+                                              gender.isSelected = false);
+                                          genders[index].isSelected = true;
+                                          gendername = genders[index].name;
+                                          print(gendername);
+                                        });
+                                      },
+                                      child: CustomRadio(genders[index]),
                                     ),
-                                    onPressed: () async {
-                                       setState(() {
-                      loading=true;
-                    });
+                                  );
+                                }),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                           
+                          SizedBox(
+                            height: height * 0.05,
+                            width: width * 0.85,
+                            child: TextFormField(
+                              controller: addressController,
+                              // onChanged: (value) {
+                              //   phonenumber = value;
+                              // },
+                              decoration: InputDecoration(
+                                hintText: 'B76,Parangiyawadiya,Anuradhapura District,Sri Lanka',
+                                labelText: 'Home Address',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                              ),
+      
+                              keyboardType: TextInputType.text,
+                              // validator: (String? value) {
+                              //   if (value!.length != 9)
+                              //     return "enter valied phone number";
+                              //   // return null;
+                              // },
+                            ),
+                          ),
+                           
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          SizedBox(
+                            height: height * 0.05,
+                            width: width * 0.85,
+                            child: TextFormField(
+                              controller: homenumber,
+                              // onChanged: (value) {
+                              //   phonenumber = value;
+                              // },
+                              decoration: InputDecoration(
+                                hintText: '0766033817',
+                                labelText: 'Home contact number',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                              ),
+      
+                              keyboardType: TextInputType.number,
+                              // validator: (String? value) {
+                              //   if (value!.length != 9)
+                              //     return "enter valied phone number";
+                              //   // return null;
+                              // },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        
+                          SizedBox(
+                            width: 200,
+                            height: 50,
+                            child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                    gradient: const LinearGradient(colors: [
+                                      Colors.orange,
+                                      Colors.red,
+      
+                                      //add more colors
+                                    ]),
+                                    borderRadius: BorderRadius.circular(25),
+                                    boxShadow: const <BoxShadow>[
+                                      BoxShadow(
+                                          color: Color.fromRGBO(0, 0, 0,
+                                              0.57), //shadow for button
+                                          blurRadius:
+                                              5) //blur radius of shadow
+                                    ]),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    disabledForegroundColor:
+                                        Colors.transparent.withOpacity(0.38),
+                                    disabledBackgroundColor:
+                                        Colors.transparent.withOpacity(0.12),
+                                    shadowColor: Colors.transparent,
+                                    //make color or elevated button transparent
+                                  ),
+                                  onPressed: () async {
+                                     setState(() {
+                    loading=true;
+                  });
+           
              
-               
-                  final result = await DatabaseService().addUser(
-                  firstname: fnameController.text,
-                  lastname: lnameController.text,
-                  email: emailController.text,
-                  homenumber: homenumber.text,
-                  phonenumber: widget.phoneNo,
-                  usertype: 'passenger',
-                  nic: idController.text,
-                  nicimage: IDimageurl!,
-                  gender: gendername!,
-                  age: ageController.text,
-                  accountstatus: "pending",
-                  // age: ageController.text,
-                  );
-                  if (result!.contains('success')) {
-                    setState(() {
-                      loading=false;
-                    });
-
-               Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo,)));
-                  }
-             
+                final result = await DatabaseServiceDriver().addUser(
+                firstname: fnameController.text,
+                lastname: lnameController.text,
+                email: emailController.text,
+                homenumber: homenumber.text,
+                phonenumber: widget.phoneNo!,
+                usertype: 'driver',
+                nic: idController.text,
+                nicimage: IDimageurl!,
+                gender: gendername!,
+                age: ageController.text,
+                accountstatus: "pending",
+                vehicletype: "car",
+                vehiclenumber: "123456789",
+                vehicleimage: "imageurl"
                 
-             
-              },
-                                    child: 
-                                    loading ? const CircularProgressIndicator()
-                                    : const Text(
-                                      "Sign up",
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : Container(
-                      alignment: Alignment.center,
-                      child: Center(
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Sign up as a Driver",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  height: height * 0.05,
-                                  width: width * 0.4,
-                                  child: TextFormField(
-                                    controller: fnameController,
-                                    // onChanged: (value) {
-                                    //   phonenumber = value;
-                                    // },
-                                    decoration: InputDecoration(
-                                      hintText: 'Sandun',
-                                      labelText: 'First Name',
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
-                                    ),
-
-                                    keyboardType: TextInputType.number,
-                                    // validator: (String? value) {
-                                    //   if (value!.length != 9)
-                                    //     return "enter valied phone number";
-                                    //   // return null;
-                                    // },
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 22,
-                                ),
-                                SizedBox(
-                                  height: height * 0.05,
-                                  width: width * 0.4,
-                                  child: TextFormField(
-                                    controller: lnameController,
-                                    // onChanged: (value) {
-                                    //   phonenumber = value;
-                                    // },
-                                    decoration: InputDecoration(
-                                      hintText: 'Srimal',
-                                      labelText: 'Last Name',
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
-                                    ),
-
-                                    keyboardType: TextInputType.number,
-                                    // validator: (String? value) {
-                                    //   if (value!.length != 9)
-                                    //     return "enter valied phone number";
-                                    //   // return null;
-                                    // },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            SizedBox(
-                              height: height * 0.05,
-                              width: width * 0.85,
-                              child: TextFormField(
-                                controller: emailController,
-                                // onChanged: (value) {
-                                //   phonenumber = value;
-                                // },
-                                decoration: InputDecoration(
-                                  hintText: 'Sandun@email.com',
-                                  labelText: 'Email',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                ),
-
-                                keyboardType: TextInputType.text,
-                                // validator: (String? value) {
-                                //   if (value!.length != 9)
-                                //     return "enter valied phone number";
-                                //   // return null;
-                                // },
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  height: height * 0.05,
-                                  width: width * 0.69,
-                                  child: TextFormField(
-                                    controller: idController,
-                                    // onChanged: (value) {
-                                    //   phonenumber = value;
-                                    // },
-                                    decoration: InputDecoration(
-                                      hintText: '123456789',
-                                      labelText: 'Driving License',
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
-                                    ),
-
-                                    keyboardType: TextInputType.number,
-                                    // validator: (String? value) {
-                                    //   if (value!.length != 9)
-                                    //     return "enter valied phone number";
-                                    //   // return null;
-                                    // },
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                 IDupload()
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            SizedBox(
-                              height: 40,
-                              //   width: width,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  shrinkWrap: true,
-                                  itemCount: genders.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, right: 8),
-                                      child: InkWell(
-                                        // splashColor: Colors.transparent,
-                                        onTap: () {
-                                          setState(() {
-                                            genders.forEach((gender) =>
-                                                gender.isSelected = false);
-                                            genders[index].isSelected = true;
-                                            gendername = genders[index].name;
-                                            print(gendername);
-                                          });
-                                        },
-                                        child: CustomRadio(genders[index]),
-                                      ),
-                                    );
-                                  }),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                             
-                            SizedBox(
-                              height: height * 0.05,
-                              width: width * 0.85,
-                              child: TextFormField(
-                                controller: addressController,
-                                // onChanged: (value) {
-                                //   phonenumber = value;
-                                // },
-                                decoration: InputDecoration(
-                                  hintText: 'B76,Parangiyawadiya,Anuradhapura District,Sri Lanka',
-                                  labelText: 'Home Address',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                ),
-
-                                keyboardType: TextInputType.text,
-                                // validator: (String? value) {
-                                //   if (value!.length != 9)
-                                //     return "enter valied phone number";
-                                //   // return null;
-                                // },
-                              ),
-                            ),
-                             
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            SizedBox(
-                              height: height * 0.05,
-                              width: width * 0.85,
-                              child: TextFormField(
-                                controller: homenumber,
-                                // onChanged: (value) {
-                                //   phonenumber = value;
-                                // },
-                                decoration: InputDecoration(
-                                  hintText: '0766033817',
-                                  labelText: 'Home contact number',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                ),
-
-                                keyboardType: TextInputType.number,
-                                // validator: (String? value) {
-                                //   if (value!.length != 9)
-                                //     return "enter valied phone number";
-                                //   // return null;
-                                // },
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                          
-                            SizedBox(
-                              width: 200,
-                              height: 50,
-                              child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                      gradient: const LinearGradient(colors: [
-                                        Colors.orange,
-                                        Colors.red,
-
-                                        //add more colors
-                                      ]),
-                                      borderRadius: BorderRadius.circular(25),
-                                      boxShadow: const <BoxShadow>[
-                                        BoxShadow(
-                                            color: Color.fromRGBO(0, 0, 0,
-                                                0.57), //shadow for button
-                                            blurRadius:
-                                                5) //blur radius of shadow
-                                      ]),
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.transparent,
-                                      disabledForegroundColor:
-                                          Colors.transparent.withOpacity(0.38),
-                                      disabledBackgroundColor:
-                                          Colors.transparent.withOpacity(0.12),
-                                      shadowColor: Colors.transparent,
-                                      //make color or elevated button transparent
-                                    ),
-                                    onPressed: () async {
-                                       setState(() {
-                      loading=true;
-                    });
-             
-               
-                  final result = await DatabaseServiceDriver().addUser(
-                  firstname: fnameController.text,
-                  lastname: lnameController.text,
-                  email: emailController.text,
-                  homenumber: homenumber.text,
-                  phonenumber: widget.phoneNo,
-                  usertype: 'driver',
-                  nic: idController.text,
-                  nicimage: IDimageurl!,
-                  gender: gendername!,
-                  age: ageController.text,
-                  accountstatus: "pending",
-                  vehicletype: "car",
-                  vehiclenumber: "123456789",
-                  vehicleimage: "imageurl"
-                  
-                  
-                  );
-                  if (result!.contains('success')) {
-                    setState(() {
-                      loading=false;
-                    });
-
-               Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo,)));
-                  }
-             
                 
-             
-              },
-                                    child: 
-                                    loading ? const CircularProgressIndicator()
-                                    : const Text(
-                                      "Sign up",
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  )),
-                            ),
-                          ],
-                        ),
+                );
+                if (result!.contains('success')) {
+                  setState(() {
+                    loading=false;
+                  });
+      
+             Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo,)));
+                }
+           
+              
+           
+            },
+                                  child: 
+                                  loading ? const CircularProgressIndicator()
+                                  : const Text(
+                                    "Sign up",
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                )),
+                          ),
+                        ],
                       ),
-                    )
-            ],
-          ),
+                    ),
+                  )
+          ],
         ),
       ),
     );
@@ -948,6 +1053,7 @@ class _IDuploadState extends State<IDupload> {
       // await ref.putFile(_photo!);
       var imageName = DateTime.now().millisecondsSinceEpoch.toString();
 								var storageRef = FirebaseStorage.instance.ref().child('ID_images/$imageName.jpg');
+                
       var uploadTask = storageRef.putFile(_photo!);
       var downloadUrl = await (await uploadTask).ref.getDownloadURL();
       IDimageurl=downloadUrl.toString();

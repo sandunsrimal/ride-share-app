@@ -44,7 +44,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
             margin: EdgeInsets.only(top: 20,left: 10),
             child: IconButton(
             color: Colors.black,
-            icon: Icon(Icons.arrow_back_ios),
+            icon: Icon(Icons.arrow_back_ios , color: Colors.white,),
             iconSize: 20,
             onPressed: () {
               Navigator.of(context).pop();

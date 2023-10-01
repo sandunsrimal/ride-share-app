@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -59,6 +60,7 @@ class _HomePageState extends State<HomePage> {
   bool loading = false; 
   bool usermode = true;
   int seats = 1;
+  bool _switchValue = false;
   double lat = 0.0;
   double lng = 0.0;
 // on below line we have specified camera position
@@ -155,113 +157,170 @@ Widget build(BuildContext context) {
 	return Scaffold(
   key: _scaffoldKey,
 	endDrawer: Drawer(
-      child: Column(
-       
+      child: Stack(
         children: [
-          Container(
-            padding: const EdgeInsets.only(top: 50),
-            height: 250,
-            decoration: const BoxDecoration(
-        gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      Colors.red,
-                      Colors.orange,
+        Column(
+         
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: 50),
+              height: 250,
+              decoration: const BoxDecoration(
+          gradient: LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                      colors: [
+                        Colors.red,
+                        Colors.orange,
+                      ],
+                    ),
+          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(120)),
+        ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('assets/images/logo.png'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Shide',
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(''),
+      
+             ], ), ), ),
+              const SizedBox(height: 30,),
+             Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+               children: [
+                Column(children: const [
+                  Icon(Icons.person_2_rounded, color: Colors.black54, size: 40,),
+                  Text("Passenger mode", style: TextStyle(color: Colors.black87),),
+                ]),
+                 SizedBox(
+                  child:  CupertinoSwitch(
+                    value: _switchValue,
+                    onChanged: (value) {
+                      setState(() {
+                        _switchValue = value;
+                        usermode = !value;
+                      });
+                    },
+                  ),
+                 ),
+                  Column(children: const [
+                  Icon(Icons.drive_eta, color: Colors.black54, size: 40,),
+                  Text("Driver mode", style: TextStyle(color: Colors.black87),),
+                ]),
+               ],
+             ),
+            ListView(
+               shrinkWrap: true,
+              children: [
+               
+                // ListTile(
+                //   leading: const Icon(Icons.person_2_rounded),
+                //   title: const Text('Passenger'),
+                //   onTap: () {
+                //    setState(() {
+      
+                //       usermode = true;
+                    
+                //    });
+                //    Navigator.pop(context);
+                //   },
+                // ),
+                // ListTile(
+                //   leading: const Icon(Icons.drive_eta_rounded),
+                //   title: const Text('Driver'),
+                //   onTap: () {
+                //    setState(() {
+      
+                //       usermode = false;
+                    
+                //    });
+                //    Navigator.pop(context);
+                //   },
+                // ),
+                usermode ? ListTile(
+                  leading: const Icon(Icons.request_quote),
+                  title: const Text('Pending Requests'),
+                  onTap: () {
+                 //   nextScreen(context, AvailiableRides());
+                  },
+                )
+               : ListTile(
+                  leading: const Icon(Icons.request_quote),
+                  title: const Text('Ride Requests'),
+                  onTap: () {
+                    nextScreen(context, AvailiableRides());
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.history),
+                  title: const Text('Ride History'),
+                  onTap: () {
+                     nextScreen(context, RideHistory());
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.monetization_on),
+                  title: const Text('Payments'),
+                  onTap: () {
+                  nextScreen(context, PaymentPage());
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: const Text('Settings'),
+                  onTap: () {
+                    nextScreen(context, SettingsPage());
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Logout'),
+                  onTap: () {
+                   signOut();
+                  },
+                ),
+              ],
+            ),
+            
+          ],
+        ),
+        Container(
+              alignment: Alignment.bottomCenter,
+              child:  Row(
+                 
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Powered by:",
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      SizedBox(
+                          width: 100,
+                          child: Image.asset(
+                              "assets/images/beesoftlogo edited.png")),
                     ],
-                  ),
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(120)),
-      ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage('assets/images/logo.png'),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'Shide',
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(''),
-
-           ], ), ), ),
-          ListView(
-             shrinkWrap: true,
-            children: [
-             
-              ListTile(
-                leading: const Icon(Icons.person_2_rounded),
-                title: const Text('Passenger'),
-                onTap: () {
-                 setState(() {
-
-                    usermode = true;
-                  
-                 });
-                 Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.drive_eta_rounded),
-                title: const Text('Driver'),
-                onTap: () {
-                 setState(() {
-
-                    usermode = false;
-                  
-                 });
-                 Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.request_quote),
-                title: const Text('Ride Requests'),
-                onTap: () {
-                  nextScreen(context, AvailiableRides());
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.history),
-                title: const Text('Ride History'),
-                onTap: () {
-                   nextScreen(context, RideHistory());
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.monetization_on),
-                title: const Text('Payments'),
-                onTap: () {
-                nextScreen(context, PaymentPage());
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.settings),
-                title: const Text('Settings'),
-                onTap: () {
-                  nextScreen(context, SettingsPage());
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text('Logout'),
-                onTap: () {
-                 signOut();
-                },
-              ),
-            ],
-          ),
+                  ),)
         ],
+
       ),
   ),
 	body: Stack(
