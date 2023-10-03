@@ -202,10 +202,10 @@ class _LoginViewState extends State<LoginView> {
                                 ? const CircularProgressIndicator()
                                 : const Padding(
                                     padding: EdgeInsets.only(
-                                      top: 18,
-                                      bottom: 18,
+                                      top: 10,
+                                      bottom: 10,
                                     ),
-                                    child: Text("Continue"),
+                                    child: Text("Continue", style: TextStyle(fontSize: 17, color: Colors.white),),
                                   ))
                                   ),
                   ),
@@ -335,7 +335,7 @@ class _LoginViewState extends State<LoginView> {
                                         ),
                                       );
                               },
-                              child: const Text("Verify"),
+                              child: const Text("Verify", style: TextStyle(fontSize: 17, color: Colors.white),),
                             )),
                       ),
                     ],
