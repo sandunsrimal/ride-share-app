@@ -301,6 +301,7 @@ Widget build(BuildContext context) {
           ],
         ),
         Container(
+          margin: const EdgeInsets.only(bottom: 20),
               alignment: Alignment.bottomCenter,
               child:  Row(
                  
