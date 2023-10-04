@@ -11,7 +11,8 @@ import 'mylocation.dart';
 
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  String phoneNumber;
+   MyHomePage({Key? key, required this.phoneNumber}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -177,7 +178,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   print("Address: ${textController.text}");
                                      Addres().setAddress(textController.text, cameraPosition.target.latitude, cameraPosition.target.longitude);
                                      Addres().setValues();
-                                     Navigator.pop(context, true);
+                                     Navigator.push(context, MaterialPageRoute(builder: (context) =>HomePage(phonenumber: widget.phoneNumber)));
+                                   //  Navigator.pop(context, true);
     
                                      
                                   // if (!loading) {

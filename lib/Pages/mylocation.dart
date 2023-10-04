@@ -98,6 +98,7 @@ Future<Position> getUserCurrentLocation() async {
       lng = value.longitude;
     });
      dateinput.text = "";
+     getJsonData();
     super.initState();
 
   }
@@ -578,7 +579,7 @@ Widget build(BuildContext context) {
                                             
                                          
 
-                                           nextScreeniOS(context,  const MyHomePage());
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
                                          
                                           
                                           // print(address);
@@ -647,7 +648,7 @@ Widget build(BuildContext context) {
                                             tfeild = "pto";
                                           });
                                           
-                                           nextScreeniOS(context,  const MyHomePage());
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
                                           
                                           
                                            print("object");
@@ -763,7 +764,7 @@ Widget build(BuildContext context) {
                                   print(ptlat);
                                   print(ptlng);
                                   //  print(phoneNumberController.text);
-                                 getJsonData();
+                                
                                       // nextScreeniOS(context, const AvailiableRides());
     
                                      
@@ -901,7 +902,7 @@ Widget build(BuildContext context) {
 
 
                                          
-                                           nextScreeniOS(context,  const MyHomePage());
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
                                            
                                         },
                                         // validator: (String? value) {
@@ -968,7 +969,7 @@ Widget build(BuildContext context) {
                                             tfeild = "dto";
                                           });
 
-                                           nextScreeniOS(context,  const MyHomePage());
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
                                           
                                         },
                                         // validator: (String? value) {
