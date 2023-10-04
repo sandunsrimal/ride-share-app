@@ -98,6 +98,7 @@ Future<Position> getUserCurrentLocation() async {
       lng = value.longitude;
     });
      dateinput.text = "";
+     getJsonData();
     super.initState();
 
   }
@@ -215,6 +216,8 @@ Widget build(BuildContext context) {
                       setState(() {
                         _switchValue = value;
                         usermode = !value;
+                        _markers.clear();
+                        polyLines.clear();
                       });
                     },
                   ),
@@ -576,9 +579,10 @@ Widget build(BuildContext context) {
                                           
                                             tfeild = "pfrom";
                                             
-                                         
-
-                                           nextScreeniOS(context,  const MyHomePage());
+                                         setState(() {
+                                      _markers.removeWhere((marker) => marker.markerId.value == "2");
+});
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
                                          
                                           
                                           // print(address);
@@ -646,8 +650,10 @@ Widget build(BuildContext context) {
                                           setState(() {
                                             tfeild = "pto";
                                           });
-                                          
-                                           nextScreeniOS(context,  const MyHomePage());
+                                           setState(() {
+                                      _markers.removeWhere((marker) => marker.markerId.value == "3");
+});
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
                                           
                                           
                                            print("object");
@@ -763,7 +769,7 @@ Widget build(BuildContext context) {
                                   print(ptlat);
                                   print(ptlng);
                                   //  print(phoneNumberController.text);
-                                 getJsonData();
+                                
                                       // nextScreeniOS(context, const AvailiableRides());
     
                                      
@@ -898,10 +904,12 @@ Widget build(BuildContext context) {
                                           setState(() {
                                             tfeild = "dfrom";
                                           });
-
+ setState(() {
+                                      _markers.removeWhere((marker) => marker.markerId.value == "4");
+});
 
                                          
-                                           nextScreeniOS(context,  const MyHomePage());
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
                                            
                                         },
                                         // validator: (String? value) {
@@ -967,8 +975,10 @@ Widget build(BuildContext context) {
                                            setState(() {
                                             tfeild = "dto";
                                           });
-
-                                           nextScreeniOS(context,  const MyHomePage());
+ setState(() {
+                                      _markers.removeWhere((marker) => marker.markerId.value == "5");
+});
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
                                           
                                         },
                                         // validator: (String? value) {
