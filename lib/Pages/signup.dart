@@ -603,7 +603,7 @@ String? name;
                               loading=false;
                             });
                     
-                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo,)));
+                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo, usermode: true,)));
                           }
                                
                                   
@@ -911,7 +911,7 @@ String? name;
                     loading=false;
                   });
       
-             Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo,)));
+             Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo, usermode: false,)));
                 }
            
               

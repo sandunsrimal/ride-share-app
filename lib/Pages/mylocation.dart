@@ -9,6 +9,7 @@ import 'package:rideshareapp/Pages/RideHistory.dart';
 import 'package:rideshareapp/Pages/login.dart';
 import 'package:rideshareapp/Pages/paymentpage.dart';
 import 'package:rideshareapp/Pages/settingPage.dart';
+import 'package:rideshareapp/Service/postride.dart';
 import 'package:rideshareapp/Widget/NavBar.dart';
 
 import '../Components/NetworkHelper.dart';
@@ -47,8 +48,8 @@ String? tfeild;
 
 class HomePage extends StatefulWidget {
   String? phonenumber;
-  
- HomePage({Key? key, required this.phonenumber}) : super(key: key);
+  bool usermode;
+ HomePage({Key? key, required this.phonenumber, required this.usermode }) : super(key: key);
 
 @override
 _HomePageState createState() => _HomePageState();
@@ -58,7 +59,8 @@ class _HomePageState extends State<HomePage> {
 
   bool index = true;
   bool loading = false; 
-  bool usermode = true;
+  // bool? usermode;
+  
   int seats = 1;
   bool _switchValue = false;
   double lat = 0.0;
@@ -117,10 +119,10 @@ void getJsonData() async {
     // for requesting data to the server and receiving response as JSON format
 
     NetworkHelper network = NetworkHelper(
-      startLat: usermode? pflat! : dflat!,
-      startLng: usermode? pflng! : dflng!,
-      endLat: usermode? ptlat! : dtlat!,
-      endLng: usermode? ptlng! : dtlng!,
+      startLat: widget.usermode? pflat! : dflat!,
+      startLng: widget.usermode? pflng! : dflng!,
+      endLat: widget.usermode? ptlat! : dtlat!,
+      endLng: widget.usermode? ptlng! : dtlng!,
     );
 
     try {
@@ -215,7 +217,7 @@ Widget build(BuildContext context) {
                     onChanged: (value) {
                       setState(() {
                         _switchValue = value;
-                        usermode = !value;
+                        widget.usermode = !value;
                         _markers.clear();
                         polyLines.clear();
                       });
@@ -256,7 +258,7 @@ Widget build(BuildContext context) {
                 //    Navigator.pop(context);
                 //   },
                 // ),
-                usermode ? ListTile(
+                widget.usermode ? ListTile(
                   leading: const Icon(Icons.request_quote),
                   title: const Text('Pending Requests'),
                   onTap: () {
@@ -352,7 +354,7 @@ Widget build(BuildContext context) {
         ),
       ),
       Positioned(
-        bottom: usermode? 230 : 330,
+        bottom: widget.usermode? 230 : 330,
         right: 20,
         child: FloatingActionButton(
           backgroundColor: Colors.orange,
@@ -408,7 +410,7 @@ Widget build(BuildContext context) {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                      usermode ?
+                      widget.usermode ?
                           Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20)),
@@ -475,7 +477,7 @@ Widget build(BuildContext context) {
  
     )
    ),
-   usermode ?
+   widget.usermode ?
      Container(
      alignment: Alignment.bottomCenter,
      child: Container(
@@ -582,7 +584,7 @@ Widget build(BuildContext context) {
                                          setState(() {
                                       _markers.removeWhere((marker) => marker.markerId.value == "2");
 });
-                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!, usermode: widget.usermode,));
                                          
                                           
                                           // print(address);
@@ -653,7 +655,7 @@ Widget build(BuildContext context) {
                                            setState(() {
                                       _markers.removeWhere((marker) => marker.markerId.value == "3");
 });
-                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!, usermode: widget.usermode,));
                                           
                                           
                                            print("object");
@@ -909,7 +911,7 @@ Widget build(BuildContext context) {
 });
 
                                          
-                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!,  usermode: widget.usermode,));
                                            
                                         },
                                         // validator: (String? value) {
@@ -978,7 +980,7 @@ Widget build(BuildContext context) {
  setState(() {
                                       _markers.removeWhere((marker) => marker.markerId.value == "5");
 });
-                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
+                                           nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!, usermode: widget.usermode,));
                                           
                                         },
                                         // validator: (String? value) {
@@ -1224,7 +1226,30 @@ Widget build(BuildContext context) {
                                 onPressed: () async {
                                  
                                   //  print(phoneNumberController.text);
-                                  getJsonData();
+                                           setState(() {
+                    loading=true;
+                  });
+           
+             
+                final result = await PostRideService().addUser(
+               phonenumber: widget.phonenumber!,
+               passengers: seats,
+               fromlatitude: dflat!,
+                fromlongitude: dflng!,
+                tolatitude: dtlat!,
+                tolongitude: dtlng!,
+                date: dateinput.text,
+                time: timeinput.text,
+                );
+
+                
+                
+                
+                if (result!.contains('success')) {
+                  setState(() {
+                    loading=false;
+                  });
+                }
                                      //   nextScreeniOS(context,  MyHomePage());
     
                                      
