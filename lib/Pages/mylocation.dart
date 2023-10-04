@@ -216,6 +216,8 @@ Widget build(BuildContext context) {
                       setState(() {
                         _switchValue = value;
                         usermode = !value;
+                        _markers.clear();
+                        polyLines.clear();
                       });
                     },
                   ),
@@ -577,8 +579,9 @@ Widget build(BuildContext context) {
                                           
                                             tfeild = "pfrom";
                                             
-                                         
-
+                                         setState(() {
+                                      _markers.removeWhere((marker) => marker.markerId.value == "2");
+});
                                            nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
                                          
                                           
@@ -647,7 +650,9 @@ Widget build(BuildContext context) {
                                           setState(() {
                                             tfeild = "pto";
                                           });
-                                          
+                                           setState(() {
+                                      _markers.removeWhere((marker) => marker.markerId.value == "3");
+});
                                            nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
                                           
                                           
@@ -899,7 +904,9 @@ Widget build(BuildContext context) {
                                           setState(() {
                                             tfeild = "dfrom";
                                           });
-
+ setState(() {
+                                      _markers.removeWhere((marker) => marker.markerId.value == "4");
+});
 
                                          
                                            nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
@@ -968,7 +975,9 @@ Widget build(BuildContext context) {
                                            setState(() {
                                             tfeild = "dto";
                                           });
-
+ setState(() {
+                                      _markers.removeWhere((marker) => marker.markerId.value == "5");
+});
                                            nextScreeniOS(context,   MyHomePage(phoneNumber:widget.phonenumber!));
                                           
                                         },
