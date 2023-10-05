@@ -270,13 +270,13 @@ String? name;
                                   image: DecorationImage(
                                       image: (imageFile == null
                                       
-                                          ? gendername=='Female' ? NetworkImage("https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/woman.png?alt=media&token=cebffdb9-3962-441a-baa6-0d05a3bb017d&_gl=1*1xlaw75*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDEwNDkuNDQuMC4w") 
-                                          : NetworkImage("https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/man-2.png?alt=media&token=b14bd4ee-b3b4-4935-aeb5-c72ce654b410&_gl=1*1hgtj3f*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDEwNjcuMjYuMC4w")
+                                          ? gendername=='Female' ? const NetworkImage("https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/woman.png?alt=media&token=cebffdb9-3962-441a-baa6-0d05a3bb017d&_gl=1*1xlaw75*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDEwNDkuNDQuMC4w") 
+                                          : const NetworkImage("https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/man-2.png?alt=media&token=b14bd4ee-b3b4-4935-aeb5-c72ce654b410&_gl=1*1hgtj3f*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDEwNjcuMjYuMC4w")
                                         //      ? CachedNetworkImageProvider("https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg?alt=media&token=02cea9d2-fa69-449f-928c-b320a758069e&_gl=1*162panl*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDAzMzMuNDguMC4w")
                                               : FileImage(imageFile!))
                                           as ImageProvider<Object>,
                                       fit: BoxFit.cover)),
-                              child: Align(
+                              child: const Align(
                                   alignment: Alignment.bottomRight,
                                   child: Icon(
                                     Icons.edit,
@@ -419,7 +419,7 @@ String? name;
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                         IDupload()
+                                         const IDupload()
                                       ],
                                     ),
                                     const SizedBox(
@@ -631,6 +631,44 @@ String? name;
                     child: Center(
                       child: Column(
                         children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                            InkWell(
+                          child: CircleAvatar(
+                            radius: 70,
+                            backgroundColor: Colors.grey[300],
+                            child: Container(
+                              height: 120,
+                              width: 120,
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(width: 1, color: Colors.grey[800]!),
+                                  color: Colors.grey[500],
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: (imageFile == null
+                                      
+                                          ? gendername=='Female' ? const NetworkImage("https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/woman.png?alt=media&token=cebffdb9-3962-441a-baa6-0d05a3bb017d&_gl=1*1xlaw75*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDEwNDkuNDQuMC4w") 
+                                          : const NetworkImage("https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/man-2.png?alt=media&token=b14bd4ee-b3b4-4935-aeb5-c72ce654b410&_gl=1*1hgtj3f*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDEwNjcuMjYuMC4w")
+                                        //      ? CachedNetworkImageProvider("https://firebasestorage.googleapis.com/v0/b/ride-share-app-fa1ab.appspot.com/o/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg?alt=media&token=02cea9d2-fa69-449f-928c-b320a758069e&_gl=1*162panl*_ga*Njg4MTQ5ODY0LjE2ODYxMzc3NTU.*_ga_CW55HF8NVT*MTY5NjE0MDMyMS40Mi4xLjE2OTYxNDAzMzMuNDguMC4w")
+                                              : FileImage(imageFile!))
+                                          as ImageProvider<Object>,
+                                      fit: BoxFit.cover)),
+                              child: const Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Icon(
+                                    Icons.edit,
+                                    size: 30,
+                                    color: Colors.black,
+                                  )),
+                            ),
+                          ),
+                          onTap: () {
+                            pickImage();
+                           
+                          },
+                                  ),
                           const Text(
                             "Sign up as a Driver",
                             style: TextStyle(
@@ -760,7 +798,7 @@ String? name;
                               const SizedBox(
                                 width: 10,
                               ),
-                               IDupload()
+                               const IDupload()
                             ],
                           ),
                           const SizedBox(
@@ -825,30 +863,90 @@ String? name;
                           const SizedBox(
                             height: 20,
                           ),
-                          SizedBox(
-                            height: height * 0.05,
-                            width: width * 0.85,
-                            child: TextFormField(
-                              controller: homenumber,
-                              // onChanged: (value) {
-                              //   phonenumber = value;
-                              // },
-                              decoration: InputDecoration(
-                                hintText: '0766033817',
-                                labelText: 'Home contact number',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
+                          Container(
+                            padding: EdgeInsets.only(left: 20, right: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                 SizedBox(
+                              height: height * 0.05,
+                              width: width * 0.5,
+                              child: TextFormField(
+                                controller: homenumber,
+                                // onChanged: (value) {
+                                //   phonenumber = value;
+                                // },
+                                decoration: InputDecoration(
+                                  hintText: '123456789',
+                                  labelText: 'Vehicle number',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
                                 ),
+                                
+                                keyboardType: TextInputType.number,
+                                // validator: (String? value) {
+                                //   if (value!.length != 9)
+                                //     return "enter valied phone number";
+                                //   // return null;
+                                // },
                               ),
-      
-                              keyboardType: TextInputType.number,
-                              // validator: (String? value) {
-                              //   if (value!.length != 9)
-                              //     return "enter valied phone number";
-                              //   // return null;
-                              // },
+                            ),
+                                SizedBox(
+                                   height: height * 0.05,
+                                  width: width * 0.3,
+                                  child: DecoratedBox(
+                                  decoration: BoxDecoration( 
+                                   //  color:Colors.lightGreen, //background color of dropdown button
+                                     border: Border.all(color: Colors.orange, width:3), //border of dropdown button
+                                     borderRadius: BorderRadius.circular(30), //border raiuds of dropdown button
+                                  
+                                  ),
+                                  
+                                  child:Padding(
+                                    padding: const EdgeInsets.only(left:30, right:30),
+                                     child:DropdownButton(
+                                      value: "Car",
+                                      items: const [ //add items in the dropdown 
+                                        DropdownMenuItem(
+                                          child: Text("car"),
+                                          value: "Car",
+                                        ), 
+                                        DropdownMenuItem(
+                                          child: Text("van"),
+                                          value: "Van"
+                                        ),
+                                     
+                                
+                                      ],
+                                      onChanged: (value){ //get value when changed
+                                          print("You have selected $value");
+                                      },
+                                      icon: const Padding( //Icon at tail, arrow bottom is default icon
+                                        padding: EdgeInsets.only(left:10),
+                                        child:Icon(Icons.keyboard_arrow_down_sharp)
+                                      ), 
+                                      iconEnabledColor: Colors.black54, //Icon color
+                                      style: const TextStyle(  //te
+                                         color: Colors.black54, //Font color
+                                         fontSize: 17 //font size on dropdown button
+                                      ),
+                                      
+                                      dropdownColor: Colors.white, 
+                                    //dropdown background color
+                                     //remove underline
+                                      isExpanded: true, //make true to make width 100%
+                                     )
+                                  )
+                                ),
+                                ),
+                              ],
                             ),
                           ),
+                               const SizedBox(
+                            height: 20,
+                          ),
+                         
                           const SizedBox(
                             height: 20,
                           ),
@@ -921,7 +1019,7 @@ String? name;
                                   loading ? const CircularProgressIndicator()
                                   : const Text(
                                     "Sign up",
-                                    style: TextStyle(fontSize: 15),
+                                    style: TextStyle(fontSize: 15, color: Colors.white),
                                   ),
                                 )),
                           ),
