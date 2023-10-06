@@ -34,6 +34,9 @@ class SignupPage extends StatefulWidget {
   State<SignupPage> createState() => _SignupPageState();
 }
 String? IDimageurl;
+String? Vehicleimageurl;
+
+
 
 class _SignupPageState extends State<SignupPage> {
    bool loading=false;
@@ -44,9 +47,9 @@ class _SignupPageState extends State<SignupPage> {
   final addressController = TextEditingController();
   final homenumber = TextEditingController();
   final idController = TextEditingController();
-  final vehicle_image = TextEditingController();
+
   final vehicle_number = TextEditingController();
-  final vehicle_type = TextEditingController();
+
 
   final auth = FirebaseAuth.instance;
   bool index = true;
@@ -55,7 +58,7 @@ class _SignupPageState extends State<SignupPage> {
 
 String? name;
   String? imageUrl;
-
+String? vehicletype;
   File? imageFile;
   String? fileName;
   bool loadingdp = false;
@@ -872,7 +875,7 @@ String? name;
                               height: height * 0.05,
                               width: width * 0.5,
                               child: TextFormField(
-                                controller: homenumber,
+                                controller: vehicle_number,
                                 // onChanged: (value) {
                                 //   phonenumber = value;
                                 // },
@@ -920,7 +923,9 @@ String? name;
                                 
                                       ],
                                       onChanged: (value){ //get value when changed
-                                          print("You have selected $value");
+                                          setState(() {
+                                            vehicletype=value.toString();
+                                          });
                                       },
                                       icon: const Padding( //Icon at tail, arrow bottom is default icon
                                         padding: EdgeInsets.only(left:10),
@@ -944,11 +949,12 @@ String? name;
                             ),
                           ),
                                const SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
+                          const VehicleImage(),
                          
                           const SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                         
                           SizedBox(
@@ -998,9 +1004,9 @@ String? name;
                 gender: gendername!,
                 age: ageController.text,
                 accountstatus: "pending",
-                vehicletype: "car",
+                vehicletype: vehicletype!,
                 vehiclenumber: "123456789",
-                vehicleimage: "imageurl"
+                vehicleimage: Vehicleimageurl!,
                 
                 
                 );
@@ -1196,6 +1202,142 @@ class _IDuploadState extends State<IDupload> {
                         color: Colors.grey[800],
                       ),
                     ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                    leading: const Icon(Icons.photo_library),
+                    title: const Text('Gallery'),
+                    onTap: () {
+                      imgFromGallery();
+                      Navigator.of(context).pop();
+                    }),
+                ListTile(
+                  leading: const Icon(Icons.photo_camera),
+                  title: const Text('Camera'),
+                  onTap: () {
+                    imgFromCamera();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+  }
+}
+
+class VehicleImage extends StatefulWidget {
+  const VehicleImage({super.key});
+
+  @override
+  State<VehicleImage> createState() => _VehicleImageState();
+}
+
+class _VehicleImageState extends State<VehicleImage> {
+   firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+
+  File? _photo;
+  final ImagePicker _picker = ImagePicker();
+
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future imgFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future uploadFile() async {
+    if (_photo == null) return;
+    final fileName = basename(_photo!.path);
+    //final destination = 'files/$fileName';
+
+    try {
+      // final ref = firebase_storage.FirebaseStorage.instance
+      //     .ref(destination)
+      //     .child('file/');
+      // await ref.putFile(_photo!);
+      var imageName = DateTime.now().millisecondsSinceEpoch.toString();
+								var storageRef = FirebaseStorage.instance.ref().child('Vehicle_images/$imageName.jpg');
+                
+      var uploadTask = storageRef.putFile(_photo!);
+      var downloadUrl = await (await uploadTask).ref.getDownloadURL();
+      Vehicleimageurl=downloadUrl.toString();
+    } catch (e) {
+      print('error occured');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        const SizedBox(
+          height: 10,
+        ),
+        Center(
+          child: InkWell(
+            onTap: () {
+              _showPicker(context);
+            },
+            child: SizedBox(
+              height: 100,
+              width: 200,
+              child: Container(
+               
+                child: _photo != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.file(
+                          _photo!,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(20)),
+                        width: 50,
+                        height: 50,
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+              ),
             ),
           ),
         )
