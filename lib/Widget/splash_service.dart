@@ -10,16 +10,7 @@ import '../Pages/signup.dart';
 
     final auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  Future<Null> _getData() async {
-    QuerySnapshot data;
-     data = await firestore
-          .collection("drivers")
-          .where('phone_number', isEqualTo : "${auth.currentUser!.phoneNumber}")
 
-          //  .orderBy('latitude', descending: false)
-          //   .limit(10)
-          .get();
-  }
 
 class SplashServices {
   void isLogin(BuildContext context) {
