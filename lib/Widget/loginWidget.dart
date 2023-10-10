@@ -32,7 +32,7 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController _fieldSix = TextEditingController();
   final auth = FirebaseAuth.instance;
 
-  var phonenumber = '';
+  String? phonenumber;
 
   @override
   void initState() {
@@ -401,6 +401,7 @@ class _LoginViewState extends State<LoginView> {
       print("Login successfull");
       setState(() {
         loading = false;
+        phonenumber = auth.currentUser!.phoneNumber!;
       });
       if(1!=1){
 
@@ -440,7 +441,7 @@ class _LoginViewState extends State<LoginView> {
       context,
       MaterialPageRoute(
           builder: (context) => SignupPage(
-                phoneNo: phoneNumberController.text,
+                phoneNo: phonenumber,
               )),
     );
   }
