@@ -16,6 +16,7 @@ class SplashServices {
   void isLogin(BuildContext context) {
 
     if (auth.currentUser != null) {
+      print(auth.currentUser!.phoneNumber);
       Timer(
           const Duration(seconds: 3),
           () => Navigator.push(
@@ -29,6 +30,7 @@ class SplashServices {
                     );
                   }
                       )));
+
       // Navigator.of(context).pushReplacement(
       //     MaterialPageRoute(builder: (context) => SignupPage()));
     } else {
