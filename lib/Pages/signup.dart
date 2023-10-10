@@ -28,7 +28,8 @@ import 'package:path/path.dart';
 
 class SignupPage extends StatefulWidget {
   String? phoneNo;
-  SignupPage({super.key, required this.phoneNo});
+  bool indexx;
+  SignupPage({super.key, required this.phoneNo, required this.indexx});
   
   @override
   State<SignupPage> createState() => _SignupPageState();
@@ -52,7 +53,7 @@ class _SignupPageState extends State<SignupPage> {
 
 
   final auth = FirebaseAuth.instance;
-  bool index = true;
+  // bool index = true;
   String? gendername;
   List<Gender> genders = <Gender>[];
 
@@ -151,7 +152,8 @@ String? vehicletype;
                       icon: const Icon(Icons.arrow_back_ios_new_rounded,
                           color: Colors.white),
                       onPressed: () {
-                        auth.signOut().then((value) {
+                        if(widget.indexx){
+                           auth.signOut().then((value) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -175,6 +177,11 @@ String? vehicletype;
                             },
                           );
                         });
+
+                        }else{
+                          Navigator.pop(context);
+                        }
+                       
                       },
                     ),
                   ),
@@ -183,6 +190,7 @@ String? vehicletype;
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        widget.indexx ?
                         InkWell(
                             child: Container(
                               decoration: BoxDecoration(
@@ -207,14 +215,15 @@ String? vehicletype;
                               ]),
                             ),
                             onTap: () {
-                              setState(() {
-                                index = true;
-                              });
-                            }),
-                        const SizedBox(
-                          width: 60,
-                        ),
-                        InkWell(
+                              // setState(() {
+                              //   index = true;
+                              // });
+                            })
+                        // const SizedBox(
+                        //   width: 60,
+                        // )
+                        
+                       : InkWell(
                             child: Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20)),
@@ -234,9 +243,9 @@ String? vehicletype;
                               ]),
                             ),
                             onTap: () {
-                              setState(() {
-                                index = false;
-                              });
+                              // setState(() {
+                              //   index = false;
+                              // });
                             }),
                       ],
                     ),
@@ -245,7 +254,7 @@ String? vehicletype;
               ),
             ),
            
-            index
+            widget.indexx
                 ? SingleChildScrollView(
                   child: Container(
                     padding: const EdgeInsets.only(top: 20,  bottom: 20),

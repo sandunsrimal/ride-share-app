@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +10,14 @@ import 'package:rideshareapp/Pages/RideHistory.dart';
 import 'package:rideshareapp/Pages/login.dart';
 import 'package:rideshareapp/Pages/paymentpage.dart';
 import 'package:rideshareapp/Pages/settingPage.dart';
+import 'package:rideshareapp/Pages/signup.dart';
 import 'package:rideshareapp/Service/postride.dart';
 import 'package:rideshareapp/Widget/NavBar.dart';
 
 import '../Components/NetworkHelper.dart';
 import '../Utils/next_screen.dart';
 import '../Widget/navigation_screen.dart';
+import '../Widget/splash_service.dart';
 import 'availiable_rides.dart';
 import 'getAddress.dart';
 import 'home.dart';
@@ -214,13 +217,45 @@ Widget build(BuildContext context) {
                  SizedBox(
                   child:  CupertinoSwitch(
                     value: _switchValue,
-                    onChanged: (value) {
-                      setState(() {
+                    onChanged: (value) async {
+                        QuerySnapshot data;
+
+   print("object");
+      data = await firestore
+          .collection('drivers')
+          .where('phone_number', isEqualTo: phone)
+
+          //  .orderBy('latitude', descending: false)
+          //   .limit(10)
+          .get();
+   
+
+    if (data.docs.length > 0) {
+         print("object");
+      setState(() {
                         _switchValue = value;
                         widget.usermode = !value;
                         _markers.clear();
                         polyLines.clear();
                       });
+     
+    } else{
+         print("Please Register as a driver");
+          // nextScreen(context, SignupPage(
+          //       phoneNo: phone,
+          //       indexx: true,
+          //     ));
+         // ignore: use_build_context_synchronously
+         Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SignupPage(
+                phoneNo: phone,
+                indexx: false,
+              )),
+    );
+    }
+                     
                     },
                   ),
                  ),

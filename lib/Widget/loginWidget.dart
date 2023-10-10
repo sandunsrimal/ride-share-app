@@ -442,6 +442,7 @@ class _LoginViewState extends State<LoginView> {
       MaterialPageRoute(
           builder: (context) => SignupPage(
                 phoneNo: phonenumber,
+                indexx: true,
               )),
     );
   }

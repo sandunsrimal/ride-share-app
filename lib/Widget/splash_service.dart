@@ -10,14 +10,41 @@ import '../Pages/signup.dart';
 
     final auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+QuerySnapshot? data;
+String? phone;
+bool hasaccount = false;
 
 
 class SplashServices {
-  void isLogin(BuildContext context) {
+  Future<void> isLogin(BuildContext context) async {
 
     if (auth.currentUser != null) {
-      print(auth.currentUser!.phoneNumber);
-      Timer(
+    
+
+      phone = auth.currentUser!.phoneNumber;
+         QuerySnapshot data;
+
+   print("object");
+      data = await firestore
+          .collection('users')
+          .where('phone_number', isEqualTo: phone)
+
+          //  .orderBy('latitude', descending: false)
+          //   .limit(10)
+          .get();
+   
+
+    if (data.docs.length > 0) {
+         print("object");
+      hasaccount = true;
+     
+    } else{
+         print("object 1");
+    }
+
+      if(hasaccount){
+           print("object 3");
+  Timer(
           const Duration(seconds: 3),
           () => Navigator.push(
               context,
@@ -30,6 +57,10 @@ class SplashServices {
                     );
                   }
                       )));
+      }
+
+
+    
 
       // Navigator.of(context).pushReplacement(
       //     MaterialPageRoute(builder: (context) => SignupPage()));
@@ -46,3 +77,27 @@ class SplashServices {
 //                         phonenumber: auth.currentUser!.phoneNumber,
 //                         usermode: true, 
 //                       )
+
+Future<Null> _getData() async {
+  
+    QuerySnapshot data;
+
+   print("object");
+      data = await firestore
+          .collection('users')
+          .where('phone_number', isEqualTo: phone)
+
+          //  .orderBy('latitude', descending: false)
+          //   .limit(10)
+          .get();
+   
+
+    if (data.docs.length > 0) {
+         print("object");
+      hasaccount = true;
+     
+    } else{
+         print("object 1");
+    }
+    return null;
+  }
