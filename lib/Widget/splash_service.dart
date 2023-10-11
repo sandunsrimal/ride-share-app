@@ -24,7 +24,7 @@ class SplashServices {
       phone = auth.currentUser!.phoneNumber;
          QuerySnapshot data;
 
-   print("object");
+
       data = await firestore
           .collection('users')
           .where('phone_number', isEqualTo: phone)
@@ -54,6 +54,20 @@ class SplashServices {
                     return HomePage(
                       phonenumber: auth.currentUser!.phoneNumber,
                       usermode: true, 
+                    );
+                  }
+                      )));
+      }else{
+          Timer(
+          const Duration(seconds: 3),
+          () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context){
+                    
+                    return SignupPage(
+                     phoneNo: phone,
+                indexx: true,
                     );
                   }
                       )));
