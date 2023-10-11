@@ -304,7 +304,7 @@ Widget build(BuildContext context) {
                   leading: const Icon(Icons.request_quote),
                   title: const Text('Ride Requests'),
                   onTap: () {
-                    nextScreen(context, AvailiableRides());
+             //       nextScreen(context, AvailiableRides());
                   },
                 ),
                 ListTile(
@@ -796,7 +796,14 @@ Widget build(BuildContext context) {
                                 ),
                                 onPressed: ()  {
 
-                                  nextScreen(context, AvailiableRides());
+                                  nextScreen(context, AvailiableRides(
+                                    fromlatitude: pflat!,
+                                    fromlongitude: pflng!,
+                                    tolatitude: ptlat!,
+                                    tolongitude: ptlng!,
+                                    passengers: seats,
+                                    phonenumber: widget.phonenumber!,
+                                  ));
 
                                   //  print(phoneNumberController.text);
                                 

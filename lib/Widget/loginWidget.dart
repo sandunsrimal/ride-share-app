@@ -1,12 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:rideshareapp/Pages/home.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 // import 'package:flutter/src/widgets/placeholder.dart';
 
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:rideshareapp/Pages/signup.dart';
+import 'package:rideshareapp/Widget/splash_service.dart';
+
+import '../Pages/mylocation.dart';
 
 // import '../Utils/next_screen.dart';
 
@@ -33,10 +38,11 @@ class _LoginViewState extends State<LoginView> {
   final auth = FirebaseAuth.instance;
 
   String? phonenumber;
-
+bool hasaccount = false;
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
@@ -383,6 +389,7 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void verify() async {
+    
     setState(() {
       Otp = _fieldOne.text +
           _fieldTwo.text +
@@ -403,7 +410,39 @@ class _LoginViewState extends State<LoginView> {
         loading = false;
         phonenumber = auth.currentUser!.phoneNumber!;
       });
-      if(1!=1){
+
+       QuerySnapshot data;
+
+
+      data = await firestore
+          .collection('users')
+          .where('phone_number', isEqualTo: phonenumber)
+
+          //  .orderBy('latitude', descending: false)
+          //   .limit(10)
+          .get();
+   
+
+    if (data.docs.length > 0) {
+         print("object");
+      hasaccount = true;
+     
+    } else{
+         print("object 1");
+    }
+      
+      if(hasaccount){
+
+        Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context){
+                    
+                    return HomePage(
+                      phonenumber:phonenumber!,
+                      usermode: true,);
+                  }
+                      ));
 
       }
       else{
@@ -445,6 +484,32 @@ class _LoginViewState extends State<LoginView> {
                 indexx: true,
               )),
     );
+
+    
+
+  //   Future<Null> _getData() async {
+  
+  //   QuerySnapshot data;
+
+  //  print("object");
+  //     data = await firestore
+  //         .collection('users')
+  //         .where('phone_number', isEqualTo: phone)
+
+  //         //  .orderBy('latitude', descending: false)
+  //         //   .limit(10)
+  //         .get();
+   
+
+  //   if (data.docs.length > 0) {
+  //        print("object");
+  //     hasaccount = true;
+     
+  //   } else{
+  //        print("object 1");
+  //   }
+  //   return null;
+  // }
   }
 }
 
