@@ -796,15 +796,8 @@ Widget build(BuildContext context) {
                                 ),
                                 onPressed: ()  {
 
-                                  print("object");
-                                  print("object");
+                                  nextScreen(context, AvailiableRides());
 
-                                  print("object");
-
-                                 print(pflat);
-                                  print(pflng);
-                                  print(ptlat);
-                                  print(ptlng);
                                   //  print(phoneNumberController.text);
                                 
                                       // nextScreeniOS(context, const AvailiableRides());
