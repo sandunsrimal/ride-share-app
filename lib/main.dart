@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:rideshareapp/Pages/login.dart';
+import 'package:rideshareapp/Pages/RideHistory.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:rideshareapp/Pages/signup.dart';
+import 'package:rideshareapp/Pages/navigation_screen.dart';
+import 'package:rideshareapp/Pages/paymentpage.dart';
+import 'package:rideshareapp/Pages/settingPage.dart';
 
 // import 'Pages/home.dart';
 
@@ -34,7 +36,8 @@ class MyApp extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(30))),
         ),
       ),
-      home: const SplashScreen(),
+      //home: const SettingsPage(),
+      home: SettingsPage(),
       // home:     SignupPage(phoneNo: '766033817',),
       // home: SignupPage(
       //   phoneNo: '766033817',
