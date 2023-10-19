@@ -161,10 +161,10 @@ class _AvailiableRidesState extends State<AvailiableRides> {
             top: 30,
             left: 15,
             child: Container(
-            margin: EdgeInsets.only(top: 20,left: 10),
+            margin: const EdgeInsets.only(top: 20,left: 10),
             child: IconButton(
             color: Colors.black,
-            icon: Icon(Icons.arrow_back_ios , color: Colors.white,),
+            icon: const Icon(Icons.arrow_back_ios , color: Colors.white,),
             iconSize: 20,
             onPressed: () {
               Navigator.of(context).pop();
@@ -174,7 +174,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
              Container(
                         margin: const EdgeInsets.only(bottom: 20),
           alignment: Alignment.bottomCenter,
-                       child: Text("Recommended Rides",style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.bold),),
+                       child: const Text("Recommended Rides",style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.bold),),
                       ),
       
         ])
@@ -214,7 +214,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                                   ),
                                 ))
                               : SliverPadding(
-                                  padding: EdgeInsets.only(top: 15, bottom: 15),
+                                  padding: const EdgeInsets.only(top: 15, bottom: 15),
                                   sliver: SliverList(
                                     delegate: SliverChildBuilderDelegate(
                                       (context, index) {
@@ -249,7 +249,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                                             if(i==1){
                                               i++;
                                                return Container(
-                                                padding: EdgeInsets.only(top: 250),
+                                                padding: const EdgeInsets.only(top: 250),
                                                  child: const EmptyPage(
                                                                                          icon: Icons.nordic_walking_rounded,
                                                                                          message: 'No rides found',
@@ -382,6 +382,7 @@ class _ListitemsState extends State<Listitems> {
     _isLoading = true;
 
     _getData();
+    pricecalcualate();
   }
 Future<Null> _getData() async {
     setState(() => _hasData = true);
@@ -437,7 +438,38 @@ Future<Null> _getData() async {
     }
     return null;
   }
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    double p = 0.017453292519943295;
+    double a = 0.5 -
+        cos((lat2 - lat1) * p) / 2 +
+        cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
 
+    return 12742 * asin(sqrt(a));
+  }
+
+double price =0;
+  void pricecalcualate(){
+   double distance = calculateDistance(widget.rides.from_latitude, widget.rides.from_longitude, widget.rides.to_latitude, widget.rides.to_longitude);
+
+   if(distance<10){
+    price = distance*30;
+   }
+   if(distance>10 && distance<20){
+    price = distance*25;
+   }
+    if(distance>20 && distance<30){
+      price = distance*20;
+    }
+    if(distance>30 && distance<40){
+      price = distance*17;
+    }
+    if(distance>40 && distance<50){
+      price = distance*14;
+    }
+    if(distance>50){
+      price = distance*10;
+    }
+  }
 
 
   @override
@@ -469,11 +501,11 @@ Future<Null> _getData() async {
                             margin: const EdgeInsets.only(top: 10,left: 10),
                             child: Row(
                               children:  [
-                                Text("Driver Name : ",style: TextStyle(fontSize: 15,
+                                const Text("Driver Name : ",style: TextStyle(fontSize: 15,
                                 fontWeight: FontWeight.bold),),
                              //   Text("${_data.length}")
                            
-                                Text("${_data![0].first_name} ${_data![0].last_name}",style: TextStyle(fontSize: 15,),),
+                                Text("${_data![0].first_name} ${_data![0].last_name}",style: const TextStyle(fontSize: 15,),),
                               ],
                             ),
                           ),
@@ -481,9 +513,9 @@ Future<Null> _getData() async {
                             margin: const EdgeInsets.only(top: 10,left: 10),
                             child: Row(
                               children:  [
-                                Text("Vehicle Type : ",style: TextStyle(fontSize: 15,
+                                const Text("Vehicle Type : ",style: TextStyle(fontSize: 15,
                                 fontWeight: FontWeight.bold),),
-                                Text("${_data![0].vehicle_type}",style: TextStyle(fontSize: 15,),),
+                                Text("${_data![0].vehicle_type}",style: const TextStyle(fontSize: 15,),),
 
                                 
                               ],
@@ -495,10 +527,10 @@ Future<Null> _getData() async {
                       Container(
                         margin: const EdgeInsets.all(20),
                         child: Row(
-                          children: const [
-                             Text("Rs. ",style: TextStyle(fontSize: 20,
+                          children:  [
+                             const Text("Rs.",style: TextStyle(fontSize: 17,
                                       fontWeight: FontWeight.bold),),
-                           Text("1000",style: TextStyle(fontSize: 25,
+                           Text(price.toStringAsFixed(2),style: const TextStyle(fontSize: 20,
                                       fontWeight: FontWeight.bold),),         
                           ],
                         ),
@@ -509,13 +541,13 @@ Future<Null> _getData() async {
                     margin: const EdgeInsets.only(left: 10),
                      child: Row(
                        children:  [
-                         Text("Date : ",style: TextStyle(fontSize: 15,
+                         const Text("Date : ",style: TextStyle(fontSize: 15,
                                       fontWeight: FontWeight.bold),),
-                                      Text("${widget.rides.date}",style: TextStyle(fontSize: 15,),),
-                                        SizedBox(width: 30,),
-                                       Text("Time : ",style: TextStyle(fontSize: 15,
+                                      Text("${widget.rides.date}",style: const TextStyle(fontSize: 15,),),
+                                        const SizedBox(width: 30,),
+                                       const Text("Time : ",style: TextStyle(fontSize: 15,
                                       fontWeight: FontWeight.bold),),
-                                      Text("${widget.rides.time}",style: TextStyle(fontSize: 15,),),
+                                      Text("${widget.rides.time}",style: const TextStyle(fontSize: 15,),),
                        ],
                      ),
                    ),
