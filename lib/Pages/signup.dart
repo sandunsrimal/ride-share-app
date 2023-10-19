@@ -711,7 +711,7 @@ String? vehicletype;
                                     ),
                                   ),
       
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.text,
                                   // validator: (String? value) {
                                   //   if (value!.length != 9)
                                   //     return "enter valied phone number";
@@ -739,7 +739,7 @@ String? vehicletype;
                                     ),
                                   ),
       
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.text,
                                   // validator: (String? value) {
                                   //   if (value!.length != 9)
                                   //     return "enter valied phone number";
