@@ -5,12 +5,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:rideshareapp/Pages/viewroute.dart';
 
 import '../Service/Driver.dart';
 import '../Service/Rides.dart';
+import '../Service/riderequest.dart';
 import '../Utils/next_screen.dart';
 import '../Widget/splash_service.dart';
 import 'empty.dart';
+
 
 class AvailiableRides extends StatefulWidget {
 
@@ -33,6 +36,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
    DocumentSnapshot? _lastVisible;
   bool? _isLoading;
   int i=1;
+  String? result;
   List<DocumentSnapshot> _snap = [];
   List<Rides> _data = [];
   bool? _hasData;
@@ -132,6 +136,8 @@ class _AvailiableRidesState extends State<AvailiableRides> {
 // print(lon2);
     return 12742 * asin(sqrt(a));
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -236,7 +242,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                                                   _data[index].from_latitude,
                                                   _data[index].from_longitude));
 
-                                                return Listitems(rides: _data[index],);
+                                                return Listitems(rides: _data[index], afromlatitude: widget.fromlatitude,   afromlongitude: widget.fromlongitude, atolatitude: widget.tolatitude, atolongitude: widget.tolongitude, aphonenumber: widget.phonenumber, apassengers: widget.passengers,);
                                             // return _ListItem(
                                             //   d: _data[index],
                                             //   tag:
@@ -360,7 +366,13 @@ class _AvailiableRidesState extends State<AvailiableRides> {
 class Listitems extends StatefulWidget {
 
   Rides rides;
-   Listitems({super.key, required this.rides});
+   double? afromlatitude;
+  double? afromlongitude;
+  double? atolatitude;
+  double? atolongitude;
+  String? aphonenumber;
+  int? apassengers;
+   Listitems({super.key, required this.rides, required this.afromlatitude, required this.afromlongitude, required this.atolatitude, required this.atolongitude, required this.aphonenumber, required this.apassengers});
 
   @override
   State<Listitems> createState() => _ListitemsState();
@@ -375,6 +387,7 @@ class _ListitemsState extends State<Listitems> {
   List<DocumentSnapshot> _snap = [];
   List<Driver>? _data;
   bool? _hasData;
+  String buttontxt ='Send a Request';
     @override
   void initState() {
 
@@ -470,8 +483,7 @@ double price =0;
       price = distance*10;
     }
   }
-
-
+ 
   @override
   Widget build(BuildContext context) {
     return 
@@ -639,9 +651,8 @@ double price =0;
                                   //make color or elevated button transparent
                                 ),
                                 onPressed: () async {
-                                  setState(() {
-                                    loading = true;
-                                  });
+                                 
+                                  nextScreen(context, ViewRoute(startLat: widget.rides.from_latitude, startLng: widget.rides.from_longitude, endLat: widget.rides.to_latitude, endLng: widget.rides.to_longitude,));
                                   //  print(phoneNumberController.text);
                                   // loading
                                   //     ?  nextScreeniOS(context, AvailiableRides())
@@ -660,9 +671,7 @@ double price =0;
 
                                   // print(phoneNumberController);
                                 },
-                                child: loading
-                                    ? const CircularProgressIndicator()
-                                    : const Padding(
+                                child:const Padding(
                                         padding: EdgeInsets.only(
                                           top: 10,
                                           bottom: 10,
@@ -707,6 +716,35 @@ double price =0;
                                   setState(() {
                                     loading = true;
                                   });
+
+ final result = await DatabaseServiceRequest().sendRequest(
+                    dpnumber: _data![0].phone_number!,
+                    ppnumber: widget.aphonenumber!,
+                    fromlatitude: widget.afromlatitude!,
+                    fromlongitude: widget.afromlongitude!,
+                    tolatitude: widget.atolatitude!,
+                    tolongitude: widget.atolongitude!,
+                    numofpassengers: widget.apassengers!,
+                    rfromlat: widget.rides.from_latitude!,
+                    rfromlng: widget.rides.from_longitude!,
+                    rtolat: widget.rides.to_latitude!,
+                    rtolng: widget.rides.to_longitude!,
+                    price: price.toStringAsFixed(2),
+                    
+
+                
+                
+                
+                );
+                if (result!.contains('success')) {
+                  setState(() {
+                    loading=false;
+                    buttontxt='Request sent!';
+                  });
+      
+         //    Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo, usermode: false,)));
+                }
+
                                   //  print(phoneNumberController.text);
                                   // loading
                                   //     ?  nextScreeniOS(context, AvailiableRides())
@@ -727,12 +765,12 @@ double price =0;
                                 },
                                 child: loading
                                     ? const CircularProgressIndicator()
-                                    : const Padding(
+                                    :  Padding(
                                         padding: EdgeInsets.only(
                                           top: 10,
                                           bottom: 10,
                                         ),
-                                        child: Text("Send a Request", style: TextStyle(color: Colors.white),),
+                                        child: Text(buttontxt, style: TextStyle(color: Colors.white),),
                                       ))
                                       ),
                   ),
