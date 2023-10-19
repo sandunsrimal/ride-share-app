@@ -243,9 +243,11 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                                             //       '${_data[index].timestamp}$index',
                                             // );
                                           }
-                                          else{
+                                          
+                                        } else {
+
                                             if(i==1){
-                                              
+                                              i++;
                                                return Container(
                                                 padding: EdgeInsets.only(top: 250),
                                                  child: const EmptyPage(
@@ -255,8 +257,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                                                );
 
                                             }
-                                           
-                                          }
+
                                         }
                                         return Opacity(
                                           opacity: _isLoading! ? 1.0 : 0.0,
@@ -453,7 +454,8 @@ Future<Null> _getData() async {
                   borderRadius: BorderRadius.circular(20),
                 color: Colors.white),
                 
-                child: Column(children: [
+                child: Column(
+                  children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -517,58 +519,58 @@ Future<Null> _getData() async {
                        ],
                      ),
                    ),
-                    Row(
-                      children: [
-                        Column(
-                  children: [
-                        Container(
-                          margin: EdgeInsets.only(left: 20,top: 15),
-                          height: 10,
-                          width: 10,
-                          decoration: const BoxDecoration(
-                            color: Colors.black,
-                            shape: BoxShape.circle,
+                //     Row(
+                //       children: [
+                //         Column(
+                //   children: [
+                //         Container(
+                //           margin: EdgeInsets.only(left: 20,top: 15),
+                //           height: 10,
+                //           width: 10,
+                //           decoration: const BoxDecoration(
+                //             color: Colors.black,
+                //             shape: BoxShape.circle,
                             
-                          )),
+                //           )),
             
              
-                        Container(margin: const EdgeInsets.only(left: 20,),
-                        height: 25,
-                        width: 2,
-                        color: Colors.black,
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          height: 10,
-                          width: 10,
-                          decoration: const BoxDecoration(
-                            color: Colors.black,
-                            shape: BoxShape.circle,
+                //         Container(margin: const EdgeInsets.only(left: 20,),
+                //         height: 25,
+                //         width: 2,
+                //         color: Colors.black,
+                //         ),
+                //         Container(
+                //           margin: const EdgeInsets.only(left: 20),
+                //           height: 10,
+                //           width: 10,
+                //           decoration: const BoxDecoration(
+                //             color: Colors.black,
+                //             shape: BoxShape.circle,
                             
-                          )),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 20,top: 10),
-                      child: const Text("From Address" ,style: TextStyle(fontSize: 15,
-                      ),),
-                    ),
-                    const SizedBox(height: 5,),
-                    Container(
-                      margin: const EdgeInsets.only(left: 20,top: 10),
-                      child: const Text("To Address" ,style: TextStyle(fontSize: 15,))
-                    ),
+                //           )),
+                //   ],
+                // ),
+                // Column(
+                //   mainAxisAlignment: MainAxisAlignment.start,
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   children: [
+                //     Container(
+                //       margin: const EdgeInsets.only(left: 20,top: 10),
+                //       child: const Text("From Address" ,style: TextStyle(fontSize: 15,
+                //       ),),
+                //     ),
+                //     const SizedBox(height: 5,),
+                //     Container(
+                //       margin: const EdgeInsets.only(left: 20,top: 10),
+                //       child: const Text("To Address" ,style: TextStyle(fontSize: 15,))
+                //     ),
                   
                   
                    
-                  ],
-                )
-                      ],
-                    ),
+                //   ],
+                // )
+                //       ],
+                //     ),
                     Row(
                       
                       mainAxisAlignment: MainAxisAlignment.end,
