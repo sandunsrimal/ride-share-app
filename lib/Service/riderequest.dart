@@ -16,6 +16,7 @@ class DatabaseServiceRequest {
     required double rtolng,
     required int numofpassengers,
     required String price,
+    required String status,
    
   }) async {
     try {
@@ -35,6 +36,8 @@ class DatabaseServiceRequest {
         'rfromlng': rfromlng,
         'rtolat': rtolat,
         'rtolng': rtolng,
+        'status': status,
+        'timestamp': timestamp,
 
       });
       return 'success';

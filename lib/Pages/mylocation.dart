@@ -19,8 +19,10 @@ import '../Utils/next_screen.dart';
 import '../Widget/navigation_screen.dart';
 import '../Widget/splash_service.dart';
 import 'availiable_rides.dart';
+import 'avaliablerequests.dart';
 import 'getAddress.dart';
 import 'home.dart';
+import 'ongoingrides.dart';
 
   TextEditingController dfrom = TextEditingController();
   TextEditingController dto = TextEditingController();
@@ -218,6 +220,13 @@ Widget build(BuildContext context) {
                   child:  CupertinoSwitch(
                     value: _switchValue,
                     onChanged: (value) async {
+                      dfrom.clear();
+                      dto.clear();
+                      pfrom.clear();
+                      pto.clear();
+                      polyLines.clear();
+                      _markers.clear();
+                      
                         QuerySnapshot data;
 
    print("object");
@@ -273,7 +282,7 @@ Widget build(BuildContext context) {
 
 
               //GIHAN
-              child: Text("mhsbdhdsb"),
+            //  child: Text("mhsbdhdsb"),
              ),
             ListView(
                shrinkWrap: true,
@@ -307,14 +316,21 @@ Widget build(BuildContext context) {
                   leading: const Icon(Icons.request_quote),
                   title: const Text('Pending Requests'),
                   onTap: () {
-                 //   nextScreen(context, AvailiableRides());
+                 //   nextScreen(context, AvailiableRides( phonenumber: widget.phonenumber!, ));
                   },
                 )
                : ListTile(
                   leading: const Icon(Icons.request_quote),
                   title: const Text('Ride Requests'),
                   onTap: () {
-             //       nextScreen(context, AvailiableRides());
+                     nextScreen(context, AvailiableRequests( phonenumber: widget.phonenumber!, ));
+                  },
+                ),
+                  ListTile(
+                  leading: const Icon(Icons.time_to_leave_outlined),
+                  title: const Text('Rides'),
+                  onTap: () {
+                     nextScreen(context, ongoingRides());
                   },
                 ),
                 ListTile(
@@ -332,8 +348,8 @@ Widget build(BuildContext context) {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.settings),
-                  title: const Text('Settings'),
+                  leading: const Icon(Icons.person),
+                  title: const Text('Profile'),
                   onTap: () {
                     nextScreen(context, SettingsPage());
                   },
@@ -481,6 +497,7 @@ Widget build(BuildContext context) {
 
                         
                         :  Container(
+                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20)),
                           child: Column(children: const [
@@ -490,7 +507,7 @@ Widget build(BuildContext context) {
                             //   size: 10,
                             // ),
                             Text(
-                              "Driver",
+                              "   Driver",
                               style: TextStyle(
                                   fontSize: 20,
                                   color: Colors.white,
@@ -498,9 +515,10 @@ Widget build(BuildContext context) {
                             )
                           ]),
                         ),
-                         const Spacer(),
+                        const Spacer(),
 
                                    Container(
+                                    alignment: Alignment.centerRight,
                                     margin: const EdgeInsets.only(bottom: 20),
                                      child: InkWell(
                                                                child: const Icon(
@@ -582,21 +600,24 @@ Widget build(BuildContext context) {
                                  //     height: height * 0.05,
                                   //    width: width * 0.4,
                                   height: 40,
-                                  width: 290,
+                                  width: 330,
                                       child: TextField(
                                         style: const TextStyle(color: Colors.white,),
                                         controller: pfrom,
+                                        maxLines: 1,
                                        
                                         // onChanged: (value) {
                                         //   phonenumber = value;
                                         // },
                                         decoration: InputDecoration(
-                                          
+                                          contentPadding: const EdgeInsets.only(left: 10, right: 10),
                                           label: const Text("From",
+                                          
                                           style: TextStyle(
                                             fontSize: 20,
                                             color: Colors.white,
-                                            fontWeight: FontWeight.bold),),
+                                            fontWeight: FontWeight.bold),
+                                            ),
                                            
 
                                       focusedBorder: OutlineInputBorder(
@@ -623,7 +644,8 @@ Widget build(BuildContext context) {
 
                                          readOnly: true, 
                                         onTap: ()  {
-                                          
+                                          _markers.clear();
+                                          polyLines.clear();
                                             tfeild = "pfrom";
                                             
                                          setState(() {
@@ -651,7 +673,7 @@ Widget build(BuildContext context) {
                                  //     height: height * 0.05,
                                   //    width: width * 0.4,
                                   height: 40,
-                                  width: 290,
+                                  width: 330,
                                       child: TextField(
                                           style: const TextStyle(color: Colors.white),
                                         controller: pto,
@@ -659,7 +681,7 @@ Widget build(BuildContext context) {
                                         //   phonenumber = value;
                                         // },
                                         decoration: InputDecoration(
-                                        
+                                          contentPadding: const EdgeInsets.only(left: 10, right: 10),
                                           label: const Text("To",
                                           
                                           
@@ -693,7 +715,8 @@ Widget build(BuildContext context) {
 
                                          readOnly: true, 
                                         onTap: ()  {
-
+                                           //  _markers.clear();
+                                                  polyLines.clear();
                                           setState(() {
                                             tfeild = "pto";
                                           });
@@ -907,7 +930,7 @@ Widget build(BuildContext context) {
                                  //     height: height * 0.05,
                                   //    width: width * 0.4,
                                   height: 40,
-                                  width: 290,
+                                  width: 330,
                                       child: TextField(
                                         style: const TextStyle(color: Colors.white),
                                        controller: dfrom,
@@ -915,7 +938,7 @@ Widget build(BuildContext context) {
                                         //   phonenumber = value;
                                         // },
                                         decoration: InputDecoration(
-                                          
+                                            contentPadding: const EdgeInsets.only(left: 10, right: 10),
                                           label: const Text("From",
                                           style: TextStyle(
                                             fontSize: 20,
@@ -976,7 +999,7 @@ Widget build(BuildContext context) {
                                  //     height: height * 0.05,
                                   //    width: width * 0.4,
                                   height: 40,
-                                  width: 290,
+                                  width: 330,
                                       child: TextField(
                                           style: const TextStyle(color: Colors.white),
                                         controller: dto,
@@ -984,7 +1007,7 @@ Widget build(BuildContext context) {
                                         //   phonenumber = value;
                                         // },
                                         decoration: InputDecoration(
-                                        
+                                          contentPadding: const EdgeInsets.only(left: 10, right: 10),
                                           label: const Text("To",
                                           
                                           
@@ -1051,7 +1074,7 @@ Widget build(BuildContext context) {
               SizedBox(
         //  padding: EdgeInsets.all(15),
               height:40,
-              width: 180,
+              width: 190,
               child:Center( 
                  child:TextField(
                    style: const TextStyle(color: Colors.white),
@@ -1116,7 +1139,7 @@ Widget build(BuildContext context) {
          SizedBox(
         //  padding: EdgeInsets.all(15),
               height:40,
-              width: 150,
+              width: 170,
               child:Center( 
                 child:Center( 
              child:TextField(
