@@ -1,47 +1,38 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:http/http.dart';
 import 'package:rideshareapp/Pages/viewroute.dart';
 
-import '../Service/Driver.dart';
-import '../Service/Rides.dart';
-import '../Service/riderequest.dart';
+import '../Service/Requests.dart';
+import '../Service/User.dart';
 import '../Utils/next_screen.dart';
 import '../Widget/splash_service.dart';
 import 'empty.dart';
 
-
-class AvailiableRides extends StatefulWidget {
-
-  double? fromlatitude;
-  double? fromlongitude;
-  double? tolatitude;
-  double? tolongitude;
+class AvailiableRequests extends StatefulWidget {
   String? phonenumber;
-  int? passengers;
-  AvailiableRides({super.key, required this.fromlatitude, required this.fromlongitude, required this.tolatitude, required this.tolongitude, required this.phonenumber, required this.passengers});
- 
+   AvailiableRequests({super.key, required this.phonenumber});
 
   @override
-  State<AvailiableRides> createState() => _AvailiableRidesState();
+  State<AvailiableRequests> createState() => _AvailiableRequestsState();
 }
 
-class _AvailiableRidesState extends State<AvailiableRides> {
-  bool loading = false;
-  ScrollController? controller;
+class _AvailiableRequestsState extends State<AvailiableRequests> {
+
+    ScrollController? controller;
    DocumentSnapshot? _lastVisible;
   bool? _isLoading;
-  int i=1;
-  String? result;
+    bool? _hasData;
+      String? result;
   List<DocumentSnapshot> _snap = [];
-  List<Rides> _data = [];
-  bool? _hasData;
+  List<Requests> _data = [];
+  int i=1;
 
-    @override
+
+  @override
   void initState() {
   
     controller = new ScrollController()..addListener(_scrollListener);
@@ -60,13 +51,15 @@ class _AvailiableRidesState extends State<AvailiableRides> {
     }
   }
 
+
+
  Future<Null> _getData() async {
     setState(() => _hasData = true);
     QuerySnapshot data;
 
     if (_lastVisible == null) {
       data = await firestore
-          .collection('rides')
+          .collection('requests')
         //  .where('latitude', isGreaterThanOrEqualTo: null)
 
           //  .orderBy('latitude', descending: false)
@@ -74,7 +67,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
           .get();
     } else {
       data = await firestore
-          .collection('rides')
+          .collection('requests')
        //   .where('latitude', isGreaterThanOrEqualTo: null)
 
           // .orderBy('latitude', descending: false)
@@ -89,7 +82,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
         setState(() {
           _isLoading = false;
           _snap.addAll(data.docs);
-          _data = _snap.map((e) => Rides.fromFirestore(e)).toList();
+          _data = _snap.map((e) => Requests.fromFirestore(e)).toList();
         });
       }
     } else {
@@ -121,28 +114,10 @@ class _AvailiableRidesState extends State<AvailiableRides> {
     _getData();
   }
 
-  double calculateDistance(lat1, lon1, lat2, lon2) {
-    double p = 0.017453292519943295;
-    double a = 0.5 -
-        cos((lat2 - lat1) * p) / 2 +
-        cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
-// print(lat1);
-// print(lat2);
-// print(lon1);
-// print(lon2);
-    // print(lat1);
-    // print(lat2);
-    // print(lon1);
-// print(lon2);
-    return 12742 * asin(sqrt(a));
-  }
-
   
-
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
+       return Scaffold(
       body:  Column(
         children: [
            Container(
@@ -180,7 +155,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
              Container(
                         margin: const EdgeInsets.only(bottom: 20),
           alignment: Alignment.bottomCenter,
-                       child: const Text("Recommended Rides",style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.bold),),
+                       child: const Text("Avaliable Requests",style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.bold),),
                       ),
       
         ])
@@ -214,7 +189,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                                       ),
                                       const EmptyPage(
                                           icon: Icons.hourglass_empty,
-                                          message: 'no rides found',
+                                          message: 'no requests found',
                                           message1: ''),
                                     ],
                                   ),
@@ -227,32 +202,15 @@ class _AvailiableRidesState extends State<AvailiableRides> {
                                         if (index < _data.length) {
 
                                     //      return Listitems();
-                                          if (calculateDistance(
-                                            
-                                                  widget.fromlatitude,
-                                                  widget.fromlongitude,
-                                                  _data[index].from_latitude,
-                                                  _data[index].from_longitude) <=
-                                              5 &&  calculateDistance(
-                                            
-                                                  widget.tolatitude,
-                                                  widget.tolongitude,
-                                                  _data[index].to_latitude,
-                                                  _data[index].to_longitude) <= 5) {
-                                                i++;
+                                          if (_data[index].dpnumber == '${widget.phonenumber}' && _data[index].status == 'pending') {
 
-                                                print(calculateDistance(
-                                                  widget.fromlatitude,
-                                                  widget.fromlongitude,
-                                                  _data[index].from_latitude,
-                                                  _data[index].from_longitude));
-
-                                                return Listitems(rides: _data[index], afromlatitude: widget.fromlatitude,   afromlongitude: widget.fromlongitude, atolatitude: widget.tolatitude, atolongitude: widget.tolongitude, aphonenumber: widget.phonenumber, apassengers: widget.passengers,);
+                                                return Listitems(req: _data[index]);
                                             // return _ListItem(
                                             //   d: _data[index],
                                             //   tag:
                                             //       '${_data[index].timestamp}$index',
                                             // );
+                                           
                                           }
                                           
                                         } else {
@@ -296,88 +254,18 @@ class _AvailiableRidesState extends State<AvailiableRides> {
         ],
       ),
     );
-  //   return Scaffold(
-     
-  //     body: Column(
-  //       children: [
-  //           Container(
-  //   alignment: Alignment.topCenter,
-  //   child: Container(
-  //     height: 120,
-  //     width: MediaQuery.of(context).size.width,
-  //     decoration: const BoxDecoration(
-  //       gradient: LinearGradient(
-  //                   begin: Alignment.topRight,
-  //                   end: Alignment.bottomLeft,
-  //                   colors: [
-  //                     Colors.red,
-  //                     Colors.orange,
-  //                   ],
-  //                 ),
-  //       borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50 ),bottomRight: Radius.circular(50)),
-  //     ),
-  //     child:    Stack(
-  //       children: [
-  //         Positioned(
-  //           top: 30,
-  //           left: 15,
-  //           child: Container(
-  //           margin: EdgeInsets.only(top: 20,left: 10),
-  //           child: IconButton(
-  //           color: Colors.black,
-  //           icon: Icon(Icons.arrow_back_ios , color: Colors.white,),
-  //           iconSize: 20,
-  //           onPressed: () {
-  //             Navigator.of(context).pop();
-  //           },
-  //         ),
-  //         ),),
-  //            Container(
-  //                       margin: const EdgeInsets.only(bottom: 20),
-  //         alignment: Alignment.bottomCenter,
-  //                      child: Text("Recommended Rides",style: TextStyle(fontSize: 25,color: Colors.white,fontWeight: FontWeight.bold),),
-  //                     ),
-      
-  //       ])
-      
- 
-  //   )
-  //  ),
-  //  Expanded(
-    
-  //    child: ListView.builder(
-  //     shrinkWrap: true,
-  //    itemCount: 4,
-  //    itemBuilder: (context, index) {
-  //     return Listitems();
-  //    },
-  //  ),
-  //  ),
-  //         // Container(
-  //         // child:   ListView.builder(
-  //         // itemCount: 3,
-  //         // padding: EdgeInsets.zero,
-  //         // itemBuilder: (context, index) {
-  //         //   return  Listitems();
-  //         // })
-  //         // ),
-           
-  //       ],
-  //     ),
-  //   );
   }
 }
-
 class Listitems extends StatefulWidget {
 
-  Rides rides;
+  Requests req;
    double? afromlatitude;
   double? afromlongitude;
   double? atolatitude;
   double? atolongitude;
   String? aphonenumber;
   int? apassengers;
-   Listitems({super.key, required this.rides, required this.afromlatitude, required this.afromlongitude, required this.atolatitude, required this.atolongitude, required this.aphonenumber, required this.apassengers});
+   Listitems({super.key, required this.req,});
 
   @override
   State<Listitems> createState() => _ListitemsState();
@@ -390,9 +278,9 @@ class _ListitemsState extends State<Listitems> {
   bool? _isLoading;
   int i=1;
   List<DocumentSnapshot> _snap = [];
-  List<Driver>? _data;
+  List<User>? _data;
   bool? _hasData;
-  String buttontxt ='Send a Request';
+  String buttontxt ='Accept Request';
     @override
   void initState() {
 
@@ -400,7 +288,9 @@ class _ListitemsState extends State<Listitems> {
     _isLoading = true;
 
     _getData();
-    pricecalcualate();
+    print("object2222");
+    print(widget.req.timestamp);
+  
   }
 Future<Null> _getData() async {
     setState(() => _hasData = true);
@@ -408,18 +298,18 @@ Future<Null> _getData() async {
 
     if (_lastVisible == null) {
       data = await firestore
-          .collection('drivers')
-          .where('phone_number', isEqualTo: "${widget.rides.phone_number}")
+          .collection('users')
+          .where('phone_number', isEqualTo: "${widget.req.ppnumber}")
 
           //  .orderBy('latitude', descending: false)
          //    .limit(10)
           .get();
 
-          print("${widget.rides.phone_number}");
+          print("${widget.req.ppnumber}");
 
     } else {
       data = await firestore
-          .collection('drivers')
+          .collection('users')
        //   .where('latitude', isGreaterThanOrEqualTo: null)
 
           // .orderBy('latitude', descending: false)
@@ -435,7 +325,7 @@ Future<Null> _getData() async {
         setState(() {
           _isLoading = false;
           _snap.addAll(data.docs);
-          _data = _snap.map((e) => Driver.fromFirestore(e)).toList();
+          _data = _snap.map((e) => User.fromFirestore(e)).toList();
           print(_data![0].first_name);
         });
       }
@@ -456,38 +346,26 @@ Future<Null> _getData() async {
     }
     return null;
   }
-  double calculateDistance(lat1, lon1, lat2, lon2) {
-    double p = 0.017453292519943295;
-    double a = 0.5 -
-        cos((lat2 - lat1) * p) / 2 +
-        cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
 
-    return 12742 * asin(sqrt(a));
+   Future UpdateStatus(String? timestamp
+     ) async {
+    //admin icon url
+
+    await firestore
+        .collection('requests')
+        .doc('$timestamp')
+        .update({
+      'status': "accept",
+    });
+
+    setState(() {
+      loading = false;
+      buttontxt='Accepted!';
+    });
   }
+ 
 
 double price =0;
-  void pricecalcualate(){
-   double distance = calculateDistance(widget.rides.from_latitude, widget.rides.from_longitude, widget.rides.to_latitude, widget.rides.to_longitude);
-
-   if(distance<10){
-    price = distance*30;
-   }
-   if(distance>10 && distance<20){
-    price = distance*25;
-   }
-    if(distance>20 && distance<30){
-      price = distance*20;
-    }
-    if(distance>30 && distance<40){
-      price = distance*17;
-    }
-    if(distance>40 && distance<50){
-      price = distance*14;
-    }
-    if(distance>50){
-      price = distance*10;
-    }
-  }
  
   @override
   Widget build(BuildContext context) {
@@ -518,11 +396,11 @@ double price =0;
                             margin: const EdgeInsets.only(top: 10,left: 10),
                             child: Row(
                               children:  [
-                                const Text("Driver Name : ",style: TextStyle(fontSize: 15,
+                                const Text("Passenger Name : ",style: TextStyle(fontSize: 15,
                                 fontWeight: FontWeight.bold),),
                              //   Text("${_data.length}")
                            
-                                Text("${_data![0].first_name} ${_data![0].last_name}",style: const TextStyle(fontSize: 15,),),
+                               Text("${_data![0].first_name} ${_data![0].last_name}",style: const TextStyle(fontSize: 15,),),
                               ],
                             ),
                           ),
@@ -530,9 +408,47 @@ double price =0;
                             margin: const EdgeInsets.only(top: 10,left: 10),
                             child: Row(
                               children:  [
-                                const Text("Vehicle Type : ",style: TextStyle(fontSize: 15,
+                                const Text("Rating : ",style: TextStyle(fontSize: 15,
                                 fontWeight: FontWeight.bold),),
-                                Text("${_data![0].vehicle_type}",style: const TextStyle(fontSize: 15,),),
+                        //        Text("${_data![0].vehicle_type}",style: const TextStyle(fontSize: 15,),),
+Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RatingBarIndicator(
+                                    rating: 5,
+                                    itemBuilder: (context, index) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                    itemSize: 25.0,
+                                    direction: Axis.horizontal,
+                                  ),
+                     //   Text("${_rating.toString()}  out of 5"),
+                      ],
+                    ),
+                                
+                              ],
+                            ),
+                          ),
+                           Container(
+                            margin: const EdgeInsets.only(top: 10,left: 10),
+                            child: Row(
+                              children:  [
+                                const Text("Price : ",style: TextStyle(fontSize: 15,
+                                fontWeight: FontWeight.bold),),
+                               Text("Rs. ${widget.req.price}",style: const TextStyle(fontSize: 15,),),
+
+                                
+                              ],
+                            ),
+                          ),
+                            Container(
+                            margin: const EdgeInsets.only(top: 10,left: 10),
+                            child: Row(
+                              children:  [
+                                const Text("Passengers : ",style: TextStyle(fontSize: 15,
+                                fontWeight: FontWeight.bold),),
+                               Text("${widget.req.numofpassengers}",style: const TextStyle(fontSize: 15,),),
 
                                 
                               ],
@@ -541,33 +457,42 @@ double price =0;
                         ],
                       ),
                       const Spacer(),
-                      Container(
-                        margin: const EdgeInsets.all(20),
-                        child: Row(
-                          children:  [
-                             const Text("Rs.",style: TextStyle(fontSize: 17,
-                                      fontWeight: FontWeight.bold),),
-                           Text(price.toStringAsFixed(2),style: const TextStyle(fontSize: 20,
-                                      fontWeight: FontWeight.bold),),         
-                          ],
-                        ),
-                      ),
+                       Container(
+                        padding: const EdgeInsets.only(top: 15),
+                         child:  CircleAvatar(
+                                             radius: 40,
+                                             backgroundImage: NetworkImage('${_data![0].dp_url}'),
+                                           ),
+                       ),
+                    const Spacer(),
+                      // const Spacer(),
+                      // Container(
+                      //   margin: const EdgeInsets.all(20),
+                      //   child: Row(
+                      //     children:  [
+                      //        const Text("Rs.",style: TextStyle(fontSize: 17,
+                      //                 fontWeight: FontWeight.bold),),
+                      //      Text(price.toStringAsFixed(2),style: const TextStyle(fontSize: 20,
+                      //                 fontWeight: FontWeight.bold),),         
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
-                   Container(
-                    margin: const EdgeInsets.only(left: 10),
-                     child: Row(
-                       children:  [
-                         const Text("Date : ",style: TextStyle(fontSize: 15,
-                                      fontWeight: FontWeight.bold),),
-                                      Text("${widget.rides.date}",style: const TextStyle(fontSize: 15,),),
-                                        const SizedBox(width: 30,),
-                                       const Text("Time : ",style: TextStyle(fontSize: 15,
-                                      fontWeight: FontWeight.bold),),
-                                      Text("${widget.rides.time}",style: const TextStyle(fontSize: 15,),),
-                       ],
-                     ),
-                   ),
+                  //  Container(
+                  //   margin: const EdgeInsets.only(left: 10),
+                  //    child: Row(
+                  //      children:  [
+                  //        const Text("Date : ",style: TextStyle(fontSize: 15,
+                  //                     fontWeight: FontWeight.bold),),
+                  //                 //    Text("${widget.rides.date}",style: const TextStyle(fontSize: 15,),),
+                  //                       const SizedBox(width: 30,),
+                  //                      const Text("Time : ",style: TextStyle(fontSize: 15,
+                  //                     fontWeight: FontWeight.bold),),
+                  //              //       Text("${widget.rides.time}",style: const TextStyle(fontSize: 15,),),
+                  //      ],
+                  //    ),
+                  //  ),
                 //     Row(
                 //       children: [
                 //         Column(
@@ -656,8 +581,10 @@ double price =0;
                                   //make color or elevated button transparent
                                 ),
                                 onPressed: () async {
-                                 
-                                  nextScreen(context, ViewRoute(startLat: widget.rides.from_latitude, startLng: widget.rides.from_longitude, endLat: widget.rides.to_latitude, endLng: widget.rides.to_longitude, pslat: widget.afromlatitude, pslng: widget.afromlongitude, ptlat: widget.atolatitude, ptlng: widget.atolongitude,));
+                             
+                               
+                                  
+                                  nextScreen(context, ViewRoute(startLat: widget.req.fromlatitude, startLng: widget.req.fromlongitude, endLat: widget.req.tolatitude, endLng: widget.req.tolongitude, pslat: widget.req.rfromlat, pslng: widget.req.rfromlng, ptlat: widget.req.rtolat, ptlng: widget.req.rtolng,));
                                   //  print(phoneNumberController.text);
                                   // loading
                                   //     ?  nextScreeniOS(context, AvailiableRides())
@@ -722,34 +649,36 @@ double price =0;
                                     loading = true;
                                   });
 
- final result = await DatabaseServiceRequest().sendRequest(
-                    dpnumber: _data![0].phone_number!,
-                    ppnumber: widget.aphonenumber!,
-                    fromlatitude: widget.afromlatitude!,
-                    fromlongitude: widget.afromlongitude!,
-                    tolatitude: widget.atolatitude!,
-                    tolongitude: widget.atolongitude!,
-                    numofpassengers: widget.apassengers!,
-                    rfromlat: widget.rides.from_latitude!,
-                    rfromlng: widget.rides.from_longitude!,
-                    rtolat: widget.rides.to_latitude!,
-                    rtolng: widget.rides.to_longitude!,
-                    price: price.toStringAsFixed(2),
-                    status: 'pending',
+                                  UpdateStatus('${widget.req.timestamp}');
+
+//  final result = await DatabaseServiceRequest().sendRequest(
+//                     dpnumber: _data![0].phone_number!,
+//                     ppnumber: widget.aphonenumber!,
+//                     fromlatitude: widget.afromlatitude!,
+//                     fromlongitude: widget.afromlongitude!,
+//                     tolatitude: widget.atolatitude!,
+//                     tolongitude: widget.atolongitude!,
+//                     numofpassengers: widget.apassengers!,
+//                     rfromlat: widget.rides.from_latitude!,
+//                     rfromlng: widget.rides.from_longitude!,
+//                     rtolat: widget.rides.to_latitude!,
+//                     rtolng: widget.rides.to_longitude!,
+//                     price: price.toStringAsFixed(2),
                     
 
                 
                 
                 
-                );
-                if (result!.contains('success')) {
-                  setState(() {
-                    loading=false;
-                    buttontxt='Request sent!';
-                  });
+//                 );
+//                 if (result!.contains('success')) {
+//                   setState(() {
+//                     loading=false;
+//                     buttontxt='Request sent!';
+//                   }
+//                   );
       
-         //    Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo, usermode: false,)));
-                }
+//          //    Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage(phonenumber: widget.phoneNo, usermode: false,)));
+//                 }
 
                                   //  print(phoneNumberController.text);
                                   // loading
@@ -772,11 +701,11 @@ double price =0;
                                 child: loading
                                     ? const CircularProgressIndicator()
                                     :  Padding(
-                                        padding: EdgeInsets.only(
+                                        padding: const EdgeInsets.only(
                                           top: 10,
                                           bottom: 10,
                                         ),
-                                        child: Text(buttontxt, style: TextStyle(color: Colors.white),),
+                                        child: Text(buttontxt, style: const TextStyle(color: Colors.white),),
                                       ))
                                       ),
                   ),

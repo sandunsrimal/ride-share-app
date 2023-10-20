@@ -59,7 +59,7 @@ class _SignupPageState extends State<SignupPage> {
 
 String? name;
   String? imageUrl;
-String? vehicletype;
+String? vehicletype= 'car';
   File? imageFile;
   String? fileName;
   bool loadingdp = false;
@@ -918,15 +918,15 @@ String? vehicletype;
                                   child:Padding(
                                     padding: const EdgeInsets.only(left:30, right:30),
                                      child:DropdownButton(
-                                      value: "Car",
+                                      value: vehicletype,
                                       items: const [ //add items in the dropdown 
                                         DropdownMenuItem(
                                           child: Text("car"),
-                                          value: "Car",
+                                          value: "car",
                                         ), 
                                         DropdownMenuItem(
                                           child: Text("van"),
-                                          value: "Van"
+                                          value: "van"
                                         ),
                                      
                                 
