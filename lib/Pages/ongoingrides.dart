@@ -711,7 +711,7 @@ double price =0;
                              
                                
                                   
-                                  nextScreen(context, ViewRoute(startLat: widget.req.fromlatitude, startLng: widget.req.fromlongitude, endLat: widget.req.tolatitude, endLng: widget.req.tolongitude, pslat: widget.req.rfromlat, pslng: widget.req.rfromlng, ptlat: widget.req.rtolat, ptlng: widget.req.rtolng,));
+                                  nextScreen(context, ViewRoute(startLat: widget.req.fromlatitude, startLng: widget.req.fromlongitude, endLat: widget.req.tolatitude, endLng: widget.req.tolongitude, pslat: widget.req.rfromlat, pslng: widget.req.rfromlng, ptlat: widget.req.rtolat, ptlng: widget.req.rtolng, rideid: widget.req.timestamp, price: widget.req.price!, dpNum: widget.req.dpnumber,));
                                   //  print(phoneNumberController.text);
                                   // loading
                                   //     ?  nextScreeniOS(context, AvailiableRides())
