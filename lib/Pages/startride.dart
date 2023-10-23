@@ -6,6 +6,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../Components/NetworkHelper.dart';
 import '../Utils/next_screen.dart';
 
+import '../Widget/splash_service.dart';
+import 'completepage.dart';
 import 'home.dart';
 
 
@@ -20,7 +22,10 @@ class ViewRoute extends StatefulWidget {
     double? pslng;
     double? ptlat;
     double? ptlng;
-   ViewRoute({super.key, this.startLat, this.startLng, this.endLat, this.endLng, this.pslat, this.pslng, this.ptlat, this.ptlng});
+    int rideid;
+    String price;
+    String? dpNum;
+   ViewRoute({super.key, this.startLat, this.startLng, this.endLat, this.endLng, this.pslat, this.pslng, this.ptlat, this.ptlng, required this.rideid, required this.price, required this.dpNum});
 
 
   @override
@@ -39,6 +44,22 @@ class _ViewRouteState extends State<ViewRoute> {
     getJsonDatal();
     
    
+  }
+
+  Future UpdateStatus(String? timestamp
+     ) async {
+    //admin icon url
+
+    await firestore
+        .collection('requests')
+        .doc('$timestamp')
+        .update({
+      'status': "completed",
+    });
+
+    setState(() {
+    
+    });
   }
 
     setPolyLines() {
@@ -105,10 +126,10 @@ class _ViewRouteState extends State<ViewRoute> {
         markerId: MarkerId("1"),
         position: LatLng(widget.startLat!, widget.startLng!),
         infoWindow: InfoWindow(
-          title: "start location",
+          title: "pickup location",
           snippet: "start",
-          onTap: () async => await launchUrlString(
-                     "https://www.google.com/maps/search/?api=1&query=${widget.startLat},${widget.startLng}"),
+          // onTap: () async => await launchUrlString(
+          //            "https://www.google.com/maps/search/?api=1&query=${widget.startLat},${widget.startLng}"),
         ),
         icon: pickup,
       ),
@@ -118,8 +139,8 @@ class _ViewRouteState extends State<ViewRoute> {
         markerId: MarkerId('2'),
         position: LatLng(widget.endLat!, widget.endLng!),
         infoWindow: InfoWindow(
-          title: "end location",
-          snippet: "des",
+          title: "drop location",
+          snippet: "destination",
         ),
         icon: drop
         
@@ -130,8 +151,8 @@ class _ViewRouteState extends State<ViewRoute> {
         markerId: MarkerId('3'),
         position: LatLng(widget.pslat!, widget.pslng!),
         infoWindow: InfoWindow(
-          title: "end location",
-          snippet: "destination",
+          title: "start location",
+          snippet: "start",
         ),
        // icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen)
         )
@@ -297,7 +318,9 @@ void getJsonDatap() async {
                  ),
                  onPressed: ()  {
 
-              
+              UpdateStatus(widget.rideid.toString());
+
+              nextScreen(context, CompleteRide(rideId: widget.rideid, price: widget.price, dpNum: widget.dpNum,));
 
                    //  print(phoneNumberController.text);
                  
