@@ -59,7 +59,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
       }
     }
   }
-
+//do calculations here
  Future<Null> _getData() async {
     setState(() => _hasData = true);
     QuerySnapshot data;
