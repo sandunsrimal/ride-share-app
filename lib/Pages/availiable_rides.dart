@@ -82,6 +82,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
             .limit(0)
           .get();
     }
+// print(data.docs.length);
 
     if (data.docs.length > 0) {
       _lastVisible = data.docs[data.docs.length - 1];
@@ -120,7 +121,7 @@ class _AvailiableRidesState extends State<AvailiableRides> {
     });
     _getData();
   }
-
+//calculate distance between two points
   double calculateDistance(lat1, lon1, lat2, lon2) {
     double p = 0.017453292519943295;
     double a = 0.5 -
