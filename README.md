@@ -1,16 +1,15 @@
-# rideshareapp
+# RideShare mobile application
+ Rideshare android and ios application with flutter and firebase<br>
+ 
+ Login<img width="998" alt="login" src="https://github.com/sandunsrimal/ride-share-app/blob/1a7e5b9f7c0351baaeedbe61e142ed91ddd1409b/images/IMG_3454.PNG"><br>
 
-A new Flutter project.
+OTP<img width="998" alt="OTP" src="https://github.com/sandunsrimal/ride-share-app/blob/1a7e5b9f7c0351baaeedbe61e142ed91ddd1409b/images/IMG_3453.PNG"><br>
 
-## Getting Started
+Ragistration<img width="998" alt="Ragistration" src="https://github.com/sandunsrimal/ride-share-app/blob/1a7e5b9f7c0351baaeedbe61e142ed91ddd1409b/images/e0788a5a-4f9d-4808-bb39-030ea67466df.JPG"><br>
 
-This project is a starting point for a Flutter application.
+Passenger<img width="998" alt="Passenger" src="https://github.com/sandunsrimal/ride-share-app/blob/1a7e5b9f7c0351baaeedbe61e142ed91ddd1409b/images/IMG_3449.PNG"><br>
 
-A few resources to get you started if this is your first Flutter project:
+Driver<img width="998" alt="Driver" src="https://github.com/sandunsrimal/ride-share-app/blob/1a7e5b9f7c0351baaeedbe61e142ed91ddd1409b/images/IMG_3452.PNG"><br>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+SideMenu<img width="998" alt="SideMenu" src="https://github.com/sandunsrimal/ride-share-app/blob/1a7e5b9f7c0351baaeedbe61e142ed91ddd1409b/images/IMG_3450.PNG"><br>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
